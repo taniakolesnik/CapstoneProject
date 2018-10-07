@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Capstone Project</string>
+
+    <string name="workshop_name_editText_hint">Workshop name</string>
+    <string name="pickDate_button_text">Pick date</string>
+    <string name="pickTime_button_text">Pick time</string>
+    <string name="workshop_description_editText_hint">description</string>
+    <string name="save_addWorkshop_button_text">Save</string>
+    <string name="cancel_addWorkshop_button_text">Cancel</string>
+
+    <string name="firebase_workshops_root_name">workshops</string>
+    <string name="firebase_users_root_name">users</string>
+
+    <string name="test_participant">Tania Kolesnik</string>
+    <string name="test_name">Google</string>
+    <string name="test_webAddress">www.google.com</string>
+    <string name="test_buildingName">111</string>
+    <string name="test_street">8th Ave</string>
+    <string name="test_city">New York</string>
+    <string name="test_postCode">NY 10011</string>
+    <string name="test_country">USA</string>
+    <string name="test_directions">test directions</string>
+    <string name="test_accessibilityInfo">test accessibility Info</string>
+</resources>
+
+
+

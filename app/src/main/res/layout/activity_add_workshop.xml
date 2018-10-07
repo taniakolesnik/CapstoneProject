@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="16dp">
+
+    <EditText
+        android:id="@+id/ws_description_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/workshop_description_editText_hint"/>
+
+    <Button
+        android:id="@+id/ws_pick_date_bn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pickDate_button_text"
+        android:onClick="showDatePickerDialog" />
+
+    <Button
+        android:id="@+id/ws_pick_time_bn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pickTime_button_text"
+        android:onClick="showTimePickerDialog" />
+
+    <Button
+        android:id="@+id/save_ws_bn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/save_addWorkshop_button_text" />
+
+    <Button
+        android:id="@+id/cancel_save_ws_bt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel_addWorkshop_button_text" />
+
+
+</LinearLayout>
