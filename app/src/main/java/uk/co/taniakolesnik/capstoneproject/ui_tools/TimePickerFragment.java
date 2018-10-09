@@ -1,4 +1,4 @@
-package uk.co.taniakolesnik.capstoneproject.ui;
+package uk.co.taniakolesnik.capstoneproject.ui_tools;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;

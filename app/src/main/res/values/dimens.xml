@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="firebase_test_user_type">4</dimen>
+    <dimen name="test_userType">@dimen/firebase_test_user_type</dimen>
+</resources>

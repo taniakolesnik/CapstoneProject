@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 public class Workshop implements Serializable {
 
+    private String id;
     private String date;
     private String time;
-    private String participants;
     private String description;
     private String name;
     private String webAddress;
@@ -23,12 +23,12 @@ public class Workshop implements Serializable {
     public Workshop() {
     }
 
-    public Workshop(String date, String time, String participants, String description,
+    public Workshop(String id, String date, String time, String description,
                     String name, String webAddress, String buildingName, String street, String city,
                     String country, String postCode, String directions, String accessibilityInfo) {
+        this.id = id;
         this.date = date;
         this.time = time;
-        this.participants = participants;
         this.description = description;
         this.name = name;
         this.webAddress = webAddress;
@@ -41,14 +41,14 @@ public class Workshop implements Serializable {
         this.accessibilityInfo = accessibilityInfo;
     }
 
-    public String getParticipants() {
-        return participants;
+
+    public String getId() {
+        return id;
     }
 
-    public void setParticipants(String participants) {
-        this.participants = participants;
+    public void setId(String id) {
+        this.id = id;
     }
-
 
     public String getDescription() {
         return description;
@@ -147,4 +147,22 @@ public class Workshop implements Serializable {
     }
 
 
+    @Override
+    public String toString() {
+        return "Workshop{" +
+                "id='" + id + '\'' +
+                ", date='" + date + '\'' +
+                ", time='" + time + '\'' +
+                ", description='" + description + '\'' +
+                ", name='" + name + '\'' +
+                ", webAddress='" + webAddress + '\'' +
+                ", buildingName='" + buildingName + '\'' +
+                ", street='" + street + '\'' +
+                ", city='" + city + '\'' +
+                ", country='" + country + '\'' +
+                ", postCode='" + postCode + '\'' +
+                ", directions='" + directions + '\'' +
+                ", accessibilityInfo='" + accessibilityInfo + '\'' +
+                '}';
+    }
 }
