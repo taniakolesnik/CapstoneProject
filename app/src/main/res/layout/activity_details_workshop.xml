@@ -42,6 +42,7 @@
         android:id="@+id/add_ws_to_user_bt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="addWorkshopToTestUser"
         android:text="@string/add_workshop_to_testUser" />
 
 

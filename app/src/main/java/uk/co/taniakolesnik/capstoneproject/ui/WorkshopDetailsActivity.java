@@ -11,6 +11,9 @@ import android.widget.EditText;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
@@ -31,6 +34,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
 
     @BindView(R.id.ws_pick_date_bn) Button pickDateButton;
     @BindView(R.id.ws_pick_time_bn) Button pickTimeButton;
+    @BindView(R.id.add_ws_to_user_bt) Button addWorkshopToUser;
     @BindView(R.id.ws_description_et) EditText descEditText;
     @BindView(R.id.save_ws_bn) Button saveButton;
     @BindView(R.id.cancel_save_ws_bt) Button cancelButton;
@@ -47,6 +51,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
         switch (intentValue){
             case INTENT_OPEN_ADD_WORKSHOP_DETAILS:
                 isNew = true;
+                addWorkshopToUser.setVisibility(View.GONE);
                 break;
             case INTENT_OPEN_UPDATE_WORKSHOP_DETAILS:
                 loadWorkshopDetails();
@@ -117,6 +122,21 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
         databaseReference.child(id).setValue(updatedOrNewWorkshop);
     }
 
+
+    public void addWorkshopToTestUser(View view) {
+        Timber.i("addWorkshopToTestUser started");
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference()
+                .child(getString(R.string.firebase_root_name))
+                .child(getString(R.string.firebase_users_root_name)).child("-LOT2YtkBP-MOLyAlDJ2");
+
+        Map<String, String> map = new HashMap<>();
+        map.put(mWorkshop.getId(), "true");
+        Timber.i("addWorkshopToTestUser getId is %s", mWorkshop.getId());
+        databaseReference.setValue(map);
+
+
+    }
 
     public void showDatePickerDialog(View v) {
         DialogFragment dialogFragment = new DatePickerFragment();
