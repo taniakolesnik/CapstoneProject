@@ -24,11 +24,10 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
 
     private String date;
     private String time;
-    private String description;
     private boolean isNew;
-    private Workshop workshop;
-    public static final String INTENT_OPEN_ADD_WORKSHOP_DETAILS = "add";
-    public static final String INTENT_OPEN_UPDATE_WORKSHOP_DETAILS = "update";
+    private Workshop mWorkshop;
+    public static final String INTENT_OPEN_ADD_WORKSHOP_DETAILS = "add_workshop";
+    public static final String INTENT_OPEN_UPDATE_WORKSHOP_DETAILS = "update_workshop";
 
     @BindView(R.id.ws_pick_date_bn) Button pickDateButton;
     @BindView(R.id.ws_pick_time_bn) Button pickTimeButton;
@@ -39,7 +38,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_workshop);
+        setContentView(R.layout.activity_details_workshop);
         ButterKnife.bind(this);
 
         Intent intent = getIntent();
@@ -59,10 +58,10 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
 
     private void loadWorkshopDetails() {
         TinyDB tinydb = new TinyDB(this);
-        workshop = tinydb.getObject(getString(R.string.workshop_tinydb_key), Workshop.class);
-        description = workshop.getDescription();
-        date = workshop.getDate();
-        time = workshop.getTime();
+        mWorkshop = tinydb.getObject(getString(R.string.workshop_tinydb_key), Workshop.class);
+        String description = mWorkshop.getDescription();
+        date = mWorkshop.getDate();
+        time = mWorkshop.getTime();
 
         descEditText.setText(description);
         pickDateButton.setText(date);
@@ -100,7 +99,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
             id = databaseReference.push().getKey();
             Timber.i("new id is %s", id);
         }  else {
-            id = workshop.getId();
+            id = mWorkshop.getId();
         }
 
         String description = descEditText.getText().toString();

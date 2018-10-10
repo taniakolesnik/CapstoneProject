@@ -24,7 +24,8 @@ import uk.co.taniakolesnik.capstoneproject.ui_tools.WorkshopsFirebaseRecyclerAda
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.workshop_rv) RecyclerView mRecyclerView;
-    @BindView(R.id.add_workshop_bn) Button mButton;
+    @BindView(R.id.add_workshop_bn) Button addWorkshopButton;
+    @BindView(R.id.add_user_bn) Button addUserButton;
     private WorkshopsFirebaseRecyclerAdapter adapter;
 
     @Override
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(adapter);
 
-        mButton.setOnClickListener(new View.OnClickListener() {
+        addWorkshopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), WorkshopDetailsActivity.class);
@@ -61,6 +62,16 @@ public class MainActivity extends AppCompatActivity {
                         WorkshopDetailsActivity.INTENT_OPEN_ADD_WORKSHOP_DETAILS);
                 startActivity(intent);
 
+            }
+        });
+
+        addUserButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), UserDetailsActivity.class);
+                intent.putExtra(getString(R.string.open_user_details_intent_key),
+                        UserDetailsActivity.INTENT_OPEN_ADD_USER_DETAILS);
+                startActivity(intent);
             }
         });
     }
@@ -76,32 +87,5 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         adapter.stopListening();
     }
-
-//    private void geTestUser() {
-//        Timber.i("geTestUsers started");
-//        mDatabaseReference.child(getString(R.string.firebase_users_root_name)).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                int testUserTypeId = 4;
-//                if (!dataSnapshot.child(String.valueOf(testUserTypeId)).exists()){
-//                    String id = mDatabaseReference.push().getKey();
-//                    Timber.i("geTestUsers id " + id);
-//                    String name = getString(R.string.test_firstName);
-//                    String lastName = getString(R.string.test_lasttName);
-//                    String pronouns = getString(R.string.test_pronouns);
-//                    String email = getString(R.string.test_email);
-//                    int userType = testUserTypeId;
-//                    User user = new User(id, name, lastName, pronouns, email, userType);
-//                    mDatabaseReference.setValue(user);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
-
 
 }
