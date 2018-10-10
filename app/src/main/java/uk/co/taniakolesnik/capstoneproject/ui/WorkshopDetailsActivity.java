@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -128,15 +129,29 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference()
                 .child(getString(R.string.firebase_root_name))
-                .child(getString(R.string.firebase_users_root_name)).child("-LOT2YtkBP-MOLyAlDJ2");
+                .child(getString(R.string.firebase_users_root_name)).child("-LOTNWv9b-oSw8SmiMgS");
 
         Map<String, String> map = new HashMap<>();
-        map.put(mWorkshop.getId(), "true");
-        Timber.i("addWorkshopToTestUser getId is %s", mWorkshop.getId());
-        databaseReference.setValue(map);
+        map.put("status", "attending");
+        map.put("date_signed", String.valueOf(System.currentTimeMillis()));
+        databaseReference.child("workshops").child(mWorkshop.getId()).setValue(map);
 
 
     }
+    public void updateWorkshopStatusToWaiting(View view) {
+        Timber.i("addWorkshopToTestUser started");
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference()
+                .child(getString(R.string.firebase_root_name))
+                .child(getString(R.string.firebase_users_root_name))
+                .child("-LOTNWv9b-oSw8SmiMgS")
+                .child("workshops")
+                .child(mWorkshop.getId());
+
+        Timber.i(" workshop id is %s", mWorkshop.getId());
+        databaseReference.child("status").setValue("waiting");
+    }
+
 
     public void showDatePickerDialog(View v) {
         DialogFragment dialogFragment = new DatePickerFragment();
