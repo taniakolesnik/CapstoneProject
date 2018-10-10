@@ -52,4 +52,11 @@
         android:onClick="updateWorkshopStatusToWaiting"
         android:text="Update Workshop to waiting " />
 
+    <Button
+        android:id="@+id/remove_ws_from_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="removeWorkshopFromUser"
+        android:text="Remove Workshop from user " />
+
 </LinearLayout>

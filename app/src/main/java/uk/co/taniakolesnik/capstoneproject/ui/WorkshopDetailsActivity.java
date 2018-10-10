@@ -2,15 +2,21 @@ package uk.co.taniakolesnik.capstoneproject.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.LoaderManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,6 +65,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
                 break;
         }
         setOnClickListeners();
+        checkIfWorkshopAddedToUser();
 
     }
 
@@ -139,7 +146,6 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
 
     }
     public void updateWorkshopStatusToWaiting(View view) {
-        Timber.i("addWorkshopToTestUser started");
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference()
                 .child(getString(R.string.firebase_root_name))
@@ -152,6 +158,40 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
         databaseReference.child("status").setValue("waiting");
     }
 
+
+    public void removeWorkshopFromUser(View view) {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference()
+                .child(getString(R.string.firebase_root_name))
+                .child(getString(R.string.firebase_users_root_name))
+                .child("-LOTNWv9b-oSw8SmiMgS")
+                .child("workshops")
+                .child(mWorkshop.getId());
+        databaseReference.removeValue();
+    }
+
+    private void checkIfWorkshopAddedToUser() {
+        DatabaseReference databaseReference =  FirebaseDatabase.getInstance().getReference()
+                .child(getString(R.string.firebase_root_name))
+                .child(getString(R.string.firebase_users_root_name))
+                .child("-LOTNWv9b-oSw8SmiMgS")
+                .child("workshops");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               if (dataSnapshot.hasChild(mWorkshop.getId())) {
+                   Toast.makeText(getApplicationContext(), "workshops already added", Toast.LENGTH_LONG).show();
+               } else {
+                   Toast.makeText(getApplicationContext(), "workshops NOT added", Toast.LENGTH_LONG).show();
+               }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     public void showDatePickerDialog(View v) {
         DialogFragment dialogFragment = new DatePickerFragment();
