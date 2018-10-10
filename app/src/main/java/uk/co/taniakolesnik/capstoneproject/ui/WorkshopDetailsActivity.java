@@ -7,13 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 import uk.co.taniakolesnik.capstoneproject.R;
 import uk.co.taniakolesnik.capstoneproject.objects.Workshop;
 import uk.co.taniakolesnik.capstoneproject.tools.TinyDB;
@@ -24,6 +24,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
 
     private String date;
     private String time;
+    private String description;
     private boolean isNew;
     private Workshop workshop;
     public static final String INTENT_OPEN_ADD_WORKSHOP_DETAILS = "add";
@@ -43,13 +44,14 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
 
         Intent intent = getIntent();
         String intentValue = intent.getExtras().getString(getString(R.string.open_workshop_details_intent_key));
+        Timber.i("intentValue is %s", intentValue);
         switch (intentValue){
             case INTENT_OPEN_ADD_WORKSHOP_DETAILS:
                 isNew = true;
-                Toast.makeText(this, "please add new workshop", Toast.LENGTH_SHORT).show();
+                break;
             case INTENT_OPEN_UPDATE_WORKSHOP_DETAILS:
                 loadWorkshopDetails();
-                Toast.makeText(this, "please updated existent workshop", Toast.LENGTH_SHORT).show();
+                break;
         }
         setOnClickListeners();
 
@@ -58,9 +60,13 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
     private void loadWorkshopDetails() {
         TinyDB tinydb = new TinyDB(this);
         workshop = tinydb.getObject(getString(R.string.workshop_tinydb_key), Workshop.class);
-        descEditText.setText(workshop.getDescription());
-        pickDateButton.setText(workshop.getDate());
-        pickTimeButton.setText(workshop.getTime());
+        description = workshop.getDescription();
+        date = workshop.getDate();
+        time = workshop.getTime();
+
+        descEditText.setText(description);
+        pickDateButton.setText(date);
+        pickTimeButton.setText(time);
     }
 
     private void setOnClickListeners() {
@@ -92,6 +98,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
 
         if (isNew){
             id = databaseReference.push().getKey();
+            Timber.i("new id is %s", id);
         }  else {
             id = workshop.getId();
         }

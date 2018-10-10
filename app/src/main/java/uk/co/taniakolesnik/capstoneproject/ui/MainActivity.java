@@ -9,11 +9,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,9 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.workshop_rv) RecyclerView mRecyclerView;
     @BindView(R.id.add_workshop_bn) Button mButton;
-    private List<Workshop> workshops;
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mDatabaseReference;
     private WorkshopsFirebaseRecyclerAdapter adapter;
 
     @Override
@@ -45,22 +39,17 @@ public class MainActivity extends AppCompatActivity {
             Timber.plant(new ReleaseTree());
         }
 
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference(getString(R.string.firebase_root_name));
-
         Query query = FirebaseDatabase.getInstance()
                 .getReference(getString(R.string.firebase_root_name))
                 .child(getString(R.string.firebase_workshops_root_name))
                 .limitToLast(50);
-
-
 
         FirebaseRecyclerOptions<Workshop> options =
                 new FirebaseRecyclerOptions.Builder<Workshop>()
                         .setQuery(query, Workshop.class)
                         .build();
 
-        adapter = new WorkshopsFirebaseRecyclerAdapter(options);
+        adapter = new WorkshopsFirebaseRecyclerAdapter(options, this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(adapter);
 
