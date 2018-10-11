@@ -64,10 +64,10 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
                 Timber.i("get from intent workshop id is %s", id);
                 loadWorkshopDetails();
                 setTitle(getString(R.string.workshop_update_title));
+                checkIfWorkshopAddedToUser();
                 break;
         }
         setOnClickListeners();
-        checkIfWorkshopAddedToUser();
 
     }
 
