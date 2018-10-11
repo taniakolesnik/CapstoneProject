@@ -12,6 +12,7 @@
     <string name="open_user_details_intent_key">open_user_details_intent_key</string>
     <string name="user_tinydb_key">user_tinydb</string>
 
+    <string name="workshop_date_for_date_dialog_bundle_key">workshop_date_bundle</string>
 
 
     <string name="workshop_update_title">Update Workshop</string>

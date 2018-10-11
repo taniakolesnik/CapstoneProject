@@ -83,7 +83,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
         time = mWorkshop.getTime();
 
         descEditText.setText(description);
-        pickDateButton.setText(date);
+        pickDateButton.setText(getUserInterfaceDate(date));
         pickTimeButton.setText(time);
     }
 
@@ -127,7 +127,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
                 webaddress, building, street, city, country, postCode, directions, accessibilityInfo);
 
         if (isNew){
-           databaseReference.push().setValue(updatedOrNewWorkshop);
+            databaseReference.push().setValue(updatedOrNewWorkshop);
         }  else {
             databaseReference.child(id).setValue(updatedOrNewWorkshop);
         }
@@ -201,6 +201,12 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
 
     public void showDatePickerDialog(View v) {
         DialogFragment dialogFragment = new DatePickerFragment();
+        if (!isNew){
+            Bundle bundle = new Bundle();
+            bundle.putString(getString(R.string.workshop_date_for_date_dialog_bundle_key), date);
+            dialogFragment.setArguments(bundle);
+            Timber.i("showDatePickerDialog not a new value, date to pass %s", date);
+        }
         dialogFragment.show(getSupportFragmentManager(), "datePicker");
         ((DatePickerFragment) dialogFragment).setListener(this);
     }
@@ -215,8 +221,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
     @Override
     public void setDate(int year, int month, int day) {
         date = day + "-" + month + "-" + year;
-        date = getUserInterfaceDate(date);
-        pickDateButton.setText(date);
+        pickDateButton.setText(getUserInterfaceDate(date));
     }
 
 
