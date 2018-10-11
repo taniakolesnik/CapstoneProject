@@ -16,7 +16,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -210,7 +214,8 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
 
     @Override
     public void setDate(int year, int month, int day) {
-        date = day + "/" + month + "/" + year;
+        date = day + "-" + month + "-" + year;
+        date = getUserInterfaceDate(date);
         pickDateButton.setText(date);
     }
 
@@ -221,4 +226,15 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
         pickTimeButton.setText(time);
     }
 
+    private String getUserInterfaceDate (String dateOld){
+        Date date = new Date();
+        SimpleDateFormat oldDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.UK);
+        try {
+            date = oldDateFormat.parse(dateOld);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        SimpleDateFormat newDateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.UK);
+        return newDateFormat.format(date);
+    }
 }
