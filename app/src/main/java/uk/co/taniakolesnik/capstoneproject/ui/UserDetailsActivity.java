@@ -82,28 +82,23 @@ public class UserDetailsActivity extends AppCompatActivity {
 
     private void saveUser() {
 
-        String id;
+        String firstName = firstNameEditText.getText().toString();
+        String lastName = lastNameEditText.getText().toString();
+        String pronouns = getString(R.string.test_pronouns);
+        String email = getString(R.string.test_email);
+        int userType = 4;
+        User updatedOrNewUser = new User(firstName, lastName, pronouns, email, userType);
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference()
                 .child(getString(R.string.firebase_root_name))
                 .child(getString(R.string.firebase_users_root_name));
 
-        if (isNew){
-            id = databaseReference.push().getKey();
-            Timber.i("new user id is %s ", id);
-        }  else {
-            id = mUser.getId();
-            Timber.i("existent user id is %s ", id);
+        if (isNew) {
+            databaseReference.push().setValue(updatedOrNewUser);
+        } else {
+            databaseReference.child("-LOTNWv9b-oSw8SmiMgS").setValue(updatedOrNewUser);
         }
-
-        String firstName = firstNameEditText.getText().toString();
-        String lastName = lastNameEditText.getText().toString();
-        String pronouns = getString(R.string.test_pronouns);
-        String email = getString(R.string.test_email);
-        int userType = 4;
-        User updatedOrNewUser = new User(id, firstName, lastName, pronouns, email, userType);
-        databaseReference.child(id).setValue(updatedOrNewUser);
     }
 
 }

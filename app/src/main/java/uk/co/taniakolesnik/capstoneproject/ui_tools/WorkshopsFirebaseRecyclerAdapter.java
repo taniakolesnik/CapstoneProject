@@ -28,16 +28,21 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
     @Override
     protected void onBindViewHolder(@NonNull final WorkshopViewHolder holder, final int position, @NonNull final Workshop model) {
         final Workshop workshop = getItem(position);
+        final String id = getRef(position).getKey();
+        Timber.i("workshop id is %s", id);
         holder.date.setText(workshop.getDate());
         holder.description.setText(workshop.getDescription());
         holder.getView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TinyDB tinyDB = new TinyDB(mContext);
+                tinyDB.putObject(mContext.getString(R.string.workshop_tinydb_key), workshop);
+
                 Intent intent = new Intent(mContext, WorkshopDetailsActivity.class);
                 intent.putExtra(mContext.getString(R.string.open_workshop_details_intent_key),
                         WorkshopDetailsActivity.INTENT_OPEN_UPDATE_WORKSHOP_DETAILS);
-                tinyDB.putObject(mContext.getString(R.string.workshop_tinydb_key), workshop);
+                intent.putExtra(mContext.getString(R.string.workshop_id_tinydb_key), id);
+
                 mContext.startActivity(intent);
             }
         });

@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 public class Workshop implements Serializable {
 
-    private String id;
     private String date;
     private String time;
     private String description;
@@ -23,10 +22,9 @@ public class Workshop implements Serializable {
     public Workshop() {
     }
 
-    public Workshop(String id, String date, String time, String description,
+    public Workshop(String date, String time, String description,
                     String name, String webAddress, String buildingName, String street, String city,
                     String country, String postCode, String directions, String accessibilityInfo) {
-        this.id = id;
         this.date = date;
         this.time = time;
         this.description = description;
@@ -39,15 +37,6 @@ public class Workshop implements Serializable {
         this.postCode = postCode;
         this.directions = directions;
         this.accessibilityInfo = accessibilityInfo;
-    }
-
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getDescription() {
@@ -150,7 +139,6 @@ public class Workshop implements Serializable {
     @Override
     public String toString() {
         return "Workshop{" +
-                "id='" + id + '\'' +
                 ", date='" + date + '\'' +
                 ", time='" + time + '\'' +
                 ", description='" + description + '\'' +

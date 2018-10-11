@@ -3,10 +3,15 @@
 
     <string name="open_workshop_details_intent_key">open_workshop_details_intent_key</string>
     <string name="workshop_tinydb_key">workshop_tinydb</string>
+    <string name="workshop_id_tinydb_key">workshop_id_tinydb</string>
 
     <string name="open_user_details_intent_key">open_user_details_intent_key</string>
     <string name="user_tinydb_key">user_tinydb</string>
 
+
+
+    <string name="workshop_update_title">Update Workshop</string>
+    <string name="workshop_add_title">Add Workshop</string>
     <string name="workshop_name_editText_hint">Workshop name</string>
     <string name="workshop_description_editText_hint">Description</string>
     <string name="user_first_name_editText_hint">User first name</string>

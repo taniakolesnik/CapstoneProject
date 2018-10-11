@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 public class User implements Serializable {
 
-    private String id;
     private String firstName;
     private String lastName;
     private String pronouns;
@@ -22,10 +21,9 @@ public class User implements Serializable {
     }
 
 
-    public User(String id, String firstName, String lastName, String pronouns, String email,
+    public User(String firstName, String lastName, String pronouns, String email,
                 String mobile, String twitter, String about, int userType,
                 ArrayList<String> workshopsList, ArrayList<String> subscriptions) {
-        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.pronouns = pronouns;
@@ -38,21 +36,12 @@ public class User implements Serializable {
         this.subscriptions = subscriptions;
     }
 
-    public User(String id, String firstName, String lastName, String pronouns, String email, int userType) {
-        this.id = id;
+    public User(String firstName, String lastName, String pronouns, String email, int userType) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.pronouns = pronouns;
         this.email = email;
         this.userType = userType;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getFirstName() {
@@ -138,7 +127,6 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "User{" +
-                "id='" + id + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", pronouns='" + pronouns + '\'' +
