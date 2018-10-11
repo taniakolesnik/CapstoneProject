@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.LoaderManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +14,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
@@ -132,40 +130,43 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
 
 
     public void addWorkshopToTestUser(View view) {
-        Timber.i("addWorkshopToTestUser started");
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference()
                 .child(getString(R.string.firebase_root_name))
                 .child(getString(R.string.firebase_users_root_name)).child("-LOTNWv9b-oSw8SmiMgS");
 
         Map<String, String> map = new HashMap<>();
-        map.put("status", "attending");
-        map.put("date_signed", String.valueOf(System.currentTimeMillis()));
-        databaseReference.child("workshops").child(mWorkshop.getId()).setValue(map);
-
-
+        map.put(getString(R.string.firebase_user_workshop_status_key),
+                getString(R.string.firebase_user_workshop_status_attending));
+        map.put(getString(R.string.firebase_user_workshop_date_signed_key),
+                String.valueOf(System.currentTimeMillis()));
+        databaseReference
+                .child(getString(R.string.firebase_users_workshops_name))
+                .child(mWorkshop.getId())
+                .setValue(map);
     }
+
     public void updateWorkshopStatusToWaiting(View view) {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference()
                 .child(getString(R.string.firebase_root_name))
                 .child(getString(R.string.firebase_users_root_name))
                 .child("-LOTNWv9b-oSw8SmiMgS")
-                .child("workshops")
+                .child(getString(R.string.firebase_users_workshops_name))
                 .child(mWorkshop.getId());
 
-        Timber.i(" workshop id is %s", mWorkshop.getId());
-        databaseReference.child("status").setValue("waiting");
+        databaseReference
+                .child(getString(R.string.firebase_user_workshop_status_key))
+                .setValue(getString(R.string.firebase_user_workshop_status_awaiting));
     }
-
 
     public void removeWorkshopFromUser(View view) {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference()
                 .child(getString(R.string.firebase_root_name))
                 .child(getString(R.string.firebase_users_root_name))
-                .child("-LOTNWv9b-oSw8SmiMgS")
-                .child("workshops")
+                .child("-LOTNWv9b-oSw8SmiMgS") //userid
+                .child(getString(R.string.firebase_users_workshops_name))
                 .child(mWorkshop.getId());
         databaseReference.removeValue();
     }
@@ -174,8 +175,8 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
         DatabaseReference databaseReference =  FirebaseDatabase.getInstance().getReference()
                 .child(getString(R.string.firebase_root_name))
                 .child(getString(R.string.firebase_users_root_name))
-                .child("-LOTNWv9b-oSw8SmiMgS")
-                .child("workshops");
+                .child("-LOTNWv9b-oSw8SmiMgS") //userid
+                .child(getString(R.string.firebase_users_workshops_name));
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
