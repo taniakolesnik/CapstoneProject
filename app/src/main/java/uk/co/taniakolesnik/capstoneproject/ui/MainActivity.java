@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.workshop_rv) RecyclerView mRecyclerView;
     @BindView(R.id.add_workshop_bn) Button addWorkshopButton;
     @BindView(R.id.add_user_bn) Button addUserButton;
+    @BindView(R.id.progressBar) ProgressBar progressBar;
     private WorkshopsFirebaseRecyclerAdapter adapter;
 
     @Override
@@ -58,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                         .setQuery(query, Workshop.class)
                         .build();
 
-        adapter = new WorkshopsFirebaseRecyclerAdapter(options, this);
+        adapter = new WorkshopsFirebaseRecyclerAdapter(options, this, progressBar);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(adapter);
 
@@ -110,8 +112,6 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList<String> workshoprsIds = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     String workshopid = snapshot.getKey();
-//                    String workshop_dateSigned = (String) snapshot.child(getString(R.string.firebase_user_workshop_date_signed_key)).getValue();
-//                    String workshop_status = (String) snapshot.child(getString(R.string.firebase_user_workshop_status_key)).getValue();
                    workshoprsIds.add(workshopid);
                 }
                 Toast.makeText(getApplicationContext(), workshoprsIds.toString(), Toast.LENGTH_LONG).show();

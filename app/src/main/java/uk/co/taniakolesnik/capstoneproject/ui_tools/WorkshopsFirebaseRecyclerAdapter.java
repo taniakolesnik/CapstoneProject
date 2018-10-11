@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -19,10 +20,19 @@ import uk.co.taniakolesnik.capstoneproject.ui.WorkshopDetailsActivity;
 public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Workshop, WorkshopViewHolder> {
 
     private Context mContext;
+    private ProgressBar progressBar;
 
-    public WorkshopsFirebaseRecyclerAdapter(FirebaseRecyclerOptions<Workshop> options, Context context) {
+    public WorkshopsFirebaseRecyclerAdapter(FirebaseRecyclerOptions<Workshop> options, Context context, View view) {
         super(options);
         mContext = context;
+        progressBar = (ProgressBar) view;
+    }
+
+    @Override
+    public void onDataChanged() {
+        if (progressBar != null) {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -42,7 +52,6 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
                 intent.putExtra(mContext.getString(R.string.open_workshop_details_intent_key),
                         WorkshopDetailsActivity.INTENT_OPEN_UPDATE_WORKSHOP_DETAILS);
                 intent.putExtra(mContext.getString(R.string.workshop_id_tinydb_key), id);
-
                 mContext.startActivity(intent);
             }
         });

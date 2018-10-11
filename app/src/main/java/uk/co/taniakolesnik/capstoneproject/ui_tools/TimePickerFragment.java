@@ -43,10 +43,6 @@ public class TimePickerFragment extends DialogFragment
                     LocalTime localTime = LocalTime.parse(timeString, DateTimeFormatter.ofPattern("HH:mm"));
                     hour = localTime.get(ChronoField.CLOCK_HOUR_OF_DAY);
                     minute = localTime.get(ChronoField.MINUTE_OF_HOUR);
-
-                    Timber.i("timeString hour is %d", hour);
-                    Timber.i("timeString minute is %d", minute);
-
                 } catch (Exception e) {
                     e.printStackTrace();
                     setCurrentTime();

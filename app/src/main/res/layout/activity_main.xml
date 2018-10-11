@@ -7,13 +7,14 @@
     tools:context="uk.co.taniakolesnik.capstoneproject.ui.MainActivity">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@color/colorRed">
 
         <TextView
-            android:text="@string/app_bar_title_donation"
-            style="@style/AppBarTitle"/>
+            style="@style/AppBarTitle"
+            android:text="@string/app_bar_title_donation" />
 
         <!-- TODO add Donate menu -->
 
@@ -43,6 +44,19 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.526"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.498" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/workshop_rv"
         android:layout_width="354dp"
@@ -61,12 +75,11 @@
         android:id="@+id/add_workshop_bn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
         android:text="@string/add_workshop_button_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/workshop_rv" />
+        tools:layout_editor_absoluteY="333dp" />
 
     <Button
         android:id="@+id/add_user_bn"
@@ -77,7 +90,6 @@
         android:layout_marginEnd="8dp"
         android:text="@string/add_user_button_text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/add_workshop_bn" />
 
@@ -87,11 +99,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:text="see workshops list for user"
         android:onClick="getWorkshopListFromTestUser"
+        android:text="see workshops list for user"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_user_bn" />
+        app:layout_constraintTop_toBottomOf="@+id/add_user_bn"
+        app:layout_constraintVertical_bias="0.0" />
 
 </android.support.constraint.ConstraintLayout>
