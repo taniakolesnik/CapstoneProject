@@ -30,7 +30,7 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
         final Workshop workshop = getItem(position);
         final String id = getRef(position).getKey();
         Timber.i("workshop id is %s", id);
-        holder.date.setText(workshop.getDate());
+        holder.date.setText(HelpMethods.getUserFreindlyDate(workshop.getDate()));
         holder.description.setText(workshop.getDescription());
         holder.getView().setOnClickListener(new View.OnClickListener() {
             @Override
