@@ -1,11 +1,29 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
+        <item name="actionBarStyle">@style/CodebarActionBar</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppBarTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_margin">20dp</item>
+    </style>
+
+    <style name="CodebarActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
+        <item name="titleTextStyle">@style/CodebarTitleTextStyle</item>
+    </style>
+
+    <style name="CodebarTitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/colorRed</item>
     </style>
 
 </resources>

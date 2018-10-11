@@ -2,4 +2,6 @@
 <resources>
     <dimen name="firebase_test_user_type">4</dimen>
     <dimen name="test_userType">@dimen/firebase_test_user_type</dimen>
+
+    <dimen name="app_bar_elevation">6dp</dimen>
 </resources>

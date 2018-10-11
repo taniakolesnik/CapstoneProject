@@ -1,5 +1,9 @@
 <resources>
-    <string name="app_name">Capstone Project</string>
+    <string name="app_name">&lt;codebar&#47;&gt;</string>
+
+    <string name="app_bar_title_donation">How to make our events better.</string>
+
+
 
     <string name="open_workshop_details_intent_key">open_workshop_details_intent_key</string>
     <string name="workshop_tinydb_key">workshop_tinydb</string>
