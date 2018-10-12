@@ -22,10 +22,10 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
     private Context mContext;
     private ProgressBar progressBar;
 
-    public WorkshopsFirebaseRecyclerAdapter(FirebaseRecyclerOptions<Workshop> options, Context context, View view) {
+    public WorkshopsFirebaseRecyclerAdapter(FirebaseRecyclerOptions<Workshop> options, Context context, ProgressBar view) {
         super(options);
         mContext = context;
-        progressBar = (ProgressBar) view;
+        progressBar = view;
     }
 
     @Override

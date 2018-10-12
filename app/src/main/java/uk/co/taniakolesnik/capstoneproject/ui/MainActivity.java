@@ -7,8 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -20,12 +22,14 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 import uk.co.taniakolesnik.capstoneproject.BuildConfig;
 import uk.co.taniakolesnik.capstoneproject.R;
+import uk.co.taniakolesnik.capstoneproject.objects.City;
 import uk.co.taniakolesnik.capstoneproject.objects.Workshop;
 import uk.co.taniakolesnik.capstoneproject.tools.ReleaseTree;
 import uk.co.taniakolesnik.capstoneproject.ui_tools.WorkshopsFirebaseRecyclerAdapter;
@@ -36,7 +40,9 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.add_workshop_bn) Button addWorkshopButton;
     @BindView(R.id.add_user_bn) Button addUserButton;
     @BindView(R.id.progressBar) ProgressBar progressBar;
+    @BindView(R.id.cities_spinner_homePage) Spinner mSpinner;
     private WorkshopsFirebaseRecyclerAdapter adapter;
+    private  List<String> citiesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,19 +56,8 @@ public class MainActivity extends AppCompatActivity {
             Timber.plant(new ReleaseTree());
         }
 
-        Query query = FirebaseDatabase.getInstance()
-                .getReference(getString(R.string.firebase_root_name))
-                .child(getString(R.string.firebase_workshops_root_name))
-                .limitToLast(50);
-
-        FirebaseRecyclerOptions<Workshop> options =
-                new FirebaseRecyclerOptions.Builder<Workshop>()
-                        .setQuery(query, Workshop.class)
-                        .build();
-
-        adapter = new WorkshopsFirebaseRecyclerAdapter(options, this, progressBar);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(adapter);
+        getWorkshopsList();
+        getCitiesSpinnerList();
 
         addWorkshopButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +77,52 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra(getString(R.string.open_user_details_intent_key),
                         UserDetailsActivity.INTENT_OPEN_ADD_USER_DETAILS);
                 startActivity(intent);
+            }
+        });
+    }
+
+    private void getWorkshopsList() {
+        Query query = FirebaseDatabase.getInstance()
+                .getReference(getString(R.string.firebase_root_name))
+                .child(getString(R.string.firebase_workshops_root_name))
+                .limitToLast(50);
+
+        FirebaseRecyclerOptions<Workshop> options =
+                new FirebaseRecyclerOptions.Builder<Workshop>()
+                        .setQuery(query, Workshop.class)
+                        .build();
+
+        adapter = new WorkshopsFirebaseRecyclerAdapter(options, this, progressBar);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(adapter);
+    }
+
+    private void getCitiesSpinnerList() {
+
+        citiesList = new ArrayList<>();
+        final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, citiesList);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(spinnerAdapter);
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
+                .child(getString(R.string.firebase_root_name))
+                .child(getString(R.string.firebase_cities_root_name));
+        Query query = databaseReference.orderByChild(getString(R.string.firebase_cities_name_key));
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+              for (DataSnapshot dataSnapshotItem : dataSnapshot.getChildren()){
+                  City city = dataSnapshotItem.getValue(City.class);
+                  String name = city.getName();
+                  citiesList.add(name);
+                  Timber.i("new city found and added %s", name);
+              }
+              spinnerAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }

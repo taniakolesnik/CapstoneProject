@@ -33,6 +33,8 @@
     <string name="add_workshop_button_text">Add workshop</string>
 
     <string name="firebase_root_name">root</string>
+    <string name="firebase_cities_root_name">cities</string>
+    <string name="firebase_cities_name_key">name</string>
     <string name="firebase_workshops_root_name">workshops</string>
     <string name="firebase_users_root_name">users</string>
     <string name="firebase_users_workshops_name">workshops</string>
