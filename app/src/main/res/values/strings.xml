@@ -3,7 +3,7 @@
 
     <string name="app_bar_title_donation">How to make our events better.</string>
 
-
+    <string name="spinner_cities_all_value">All</string>
 
     <string name="open_workshop_details_intent_key">open_workshop_details_intent_key</string>
     <string name="workshop_tinydb_key">workshop_tinydb</string>
@@ -35,6 +35,7 @@
     <string name="firebase_root_name">root</string>
     <string name="firebase_cities_root_name">cities</string>
     <string name="firebase_cities_name_key">name</string>
+    <string name="firebase_workshop_city_name_key">city</string>
     <string name="firebase_workshops_root_name">workshops</string>
     <string name="firebase_users_root_name">users</string>
     <string name="firebase_users_workshops_name">workshops</string>
