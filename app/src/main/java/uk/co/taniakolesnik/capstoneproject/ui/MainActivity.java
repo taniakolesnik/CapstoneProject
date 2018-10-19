@@ -122,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                citiesList.clear();
                 for (DataSnapshot dataSnapshotItem : dataSnapshot.getChildren()) {
                     City city = dataSnapshotItem.getValue(City.class);
                     String name = city.getName();
@@ -186,12 +187,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (city == getString(R.string.spinner_cities_all_value)) {
             getAllWorkshopsList();
         } else {
-            attachRecyclerViewAdapter(city);
+            loadWorkshopsForCity(city);
         }
 
     }
 
-    private void attachRecyclerViewAdapter(String city) {
+    private void loadWorkshopsForCity(String city) {
         Query query = FirebaseDatabase.getInstance()
                 .getReference(getString(R.string.firebase_root_name))
                 .child(getString(R.string.firebase_workshops_root_name))
@@ -214,4 +215,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
+    public void addNewCity(View view){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
+                .child(getString(R.string.firebase_root_name))
+                .child(getString(R.string.firebase_cities_root_name));
+        City city = new City();
+        city.setName("San Diego");
+        databaseReference.push().setValue(city);
+    }
+
 }

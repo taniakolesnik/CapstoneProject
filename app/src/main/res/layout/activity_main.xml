@@ -116,6 +116,16 @@
                     android:onClick="getWorkshopListFromTestUser"
                     android:text="see workshops list for user" />
 
+                <Button
+                    android:id="@+id/add_new_city_bn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_gravity="center_horizontal"
+                    android:onClick="addNewCity"
+                    android:text="add new city" />
+
             </LinearLayout>
 
 
