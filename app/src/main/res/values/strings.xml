@@ -65,6 +65,11 @@
     <string name="test_twitter">taniakolesnik</string>
     <string name="test_about">top secret</string>
 
+    <string name="github_client_id">3d07ee7ebfec179b882d</string>
+    <string name="github_client_secret">f1948fd03a79b547cad30ebeaaad4b36084d0f3f</string>
+    <string name="github_token">614f5a300ced73aff1c3ece5b08a75f04a6e065f</string>
+    <string name="github_redirect">https://capstoneproject-81fa7.firebaseapp.com/__/auth/handler</string>
+
 </resources>
 
 

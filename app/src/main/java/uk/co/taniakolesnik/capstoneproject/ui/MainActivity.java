@@ -1,6 +1,7 @@
 package uk.co.taniakolesnik.capstoneproject.ui;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -9,12 +10,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,6 +26,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,16 +43,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @BindView(R.id.workshop_rv)
     RecyclerView mRecyclerView;
-    @BindView(R.id.add_workshop_bn)
-    Button addWorkshopButton;
-    @BindView(R.id.add_user_bn)
-    Button addUserButton;
+//    @BindView(R.id.add_workshop_bn)
+//    Button addWorkshopButton;
+//    @BindView(R.id.add_user_bn)
+//    Button addUserButton;
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
     @BindView(R.id.cities_spinner_homePage)
     Spinner mSpinner;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
     private WorkshopsFirebaseRecyclerAdapter adapter;
     private List<String> citiesList;
+    private static final int REQUEST_CODE = 001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,28 +69,45 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Timber.plant(new ReleaseTree());
         }
 
+
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                if (firebaseUser != null) {
+                    Toast.makeText(getApplicationContext(), "User is signed in", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "User signed out", Toast.LENGTH_LONG).show();
+                }
+                //TODO set ui changes on user auth status
+            }
+        };
+
         getCitiesSpinnerList();
+//
+//        addWorkshopButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getApplicationContext(), WorkshopDetailsActivity.class);
+//                intent.putExtra(getString(R.string.open_workshop_details_intent_key),
+//                        WorkshopDetailsActivity.INTENT_OPEN_ADD_WORKSHOP_DETAILS);
+//                startActivity(intent);
+//
+//            }
+//        });
 
-        addWorkshopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), WorkshopDetailsActivity.class);
-                intent.putExtra(getString(R.string.open_workshop_details_intent_key),
-                        WorkshopDetailsActivity.INTENT_OPEN_ADD_WORKSHOP_DETAILS);
-                startActivity(intent);
-
-            }
-        });
-
-        addUserButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), UserDetailsActivity.class);
-                intent.putExtra(getString(R.string.open_user_details_intent_key),
-                        UserDetailsActivity.INTENT_OPEN_ADD_USER_DETAILS);
-                startActivity(intent);
-            }
-        });
+//        addUserButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getApplicationContext(), UserDetailsActivity.class);
+//                intent.putExtra(getString(R.string.open_user_details_intent_key),
+//                        UserDetailsActivity.INTENT_OPEN_ADD_USER_DETAILS);
+//                startActivity(intent);
+//            }
+//        });
+//
     }
 
     private void getAllWorkshopsList() {
@@ -145,13 +169,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (adapter!=null){
             adapter.startListening();
         }
-
+        mAuth.addAuthStateListener(mAuthListener);
+     //   FirebaseUser currentUser = mAuth.getCurrentUser(); // TODO why?\
+      //  Timber.i("get current user %s", currentUser.toString());
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         adapter.stopListening();
+        mAuth.removeAuthStateListener(mAuthListener);
     }
 
     public void getWorkshopListFromTestUser(View view) {
@@ -225,4 +252,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         databaseReference.push().setValue(city);
     }
 
+    public void loginGitHub(View v){
+
+        requestGitHubIdentity();
+
+    }
+
+    private void requestGitHubIdentity() {
+        // GET https://github.com/login/oauth/authorize
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme("https")
+                .authority("github.com")
+                .appendPath("login")
+                .appendPath("oauth")
+                .appendPath("authorize")
+                .appendQueryParameter("client_id", getString(R.string.github_client_id))
+                .appendQueryParameter("redirect_uri", getString(R.string.github_redirect))
+                .appendQueryParameter("state", getRandomNumber())
+                .appendQueryParameter("scope", "user:email");
+        Uri uri = builder.build();
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivityForResult(intent, REQUEST_CODE);
+    }
+
+    public static String getRandomNumber() {
+        Random random = new Random();
+        int number = random.nextInt(999999999);
+        Timber.i("random number is %d", number);
+        return String.format(Locale.ENGLISH, "%06d", number);
+    }
 }

@@ -88,43 +88,54 @@
 
                 </android.support.v7.widget.RecyclerView>
 
-                <Button
-                    android:id="@+id/add_workshop_bn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="36dp"
-                    android:layout_gravity="center_horizontal"
-                    android:text="@string/add_workshop_button_text" />
+                <!--<Button-->
+                    <!--android:id="@+id/add_workshop_bn"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="36dp"-->
+                    <!--android:layout_gravity="center_horizontal"-->
+                    <!--android:text="@string/add_workshop_button_text" />-->
+
+                <!--<Button-->
+                    <!--android:id="@+id/add_user_bn"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginStart="8dp"-->
+                    <!--android:layout_marginTop="8dp"-->
+                    <!--android:layout_marginEnd="8dp"-->
+                    <!--android:layout_gravity="center_horizontal"-->
+                    <!--android:text="@string/add_user_button_text" />-->
+
+                <!--<Button-->
+                    <!--android:id="@+id/retrieve_ws_from_user"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="8dp"-->
+                    <!--android:layout_marginBottom="8dp"-->
+                    <!--android:layout_gravity="center_horizontal"-->
+                    <!--android:onClick="getWorkshopListFromTestUser"-->
+                    <!--android:text="see workshops list for user" />-->
+
+                <!--<Button-->
+                    <!--android:id="@+id/add_new_city_bn"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="8dp"-->
+                    <!--android:layout_marginBottom="8dp"-->
+                    <!--android:layout_gravity="center_horizontal"-->
+                    <!--android:onClick="addNewCity"-->
+                    <!--android:text="add new city" />-->
 
                 <Button
-                    android:id="@+id/add_user_bn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_gravity="center_horizontal"
-                    android:text="@string/add_user_button_text" />
-
-                <Button
-                    android:id="@+id/retrieve_ws_from_user"
+                    android:id="@+id/login_bn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:layout_gravity="center_horizontal"
-                    android:onClick="getWorkshopListFromTestUser"
-                    android:text="see workshops list for user" />
+                    android:onClick="loginGitHub"
+                    android:text="login with Git Hub" />
 
-                <Button
-                    android:id="@+id/add_new_city_bn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_gravity="center_horizontal"
-                    android:onClick="addNewCity"
-                    android:text="add new city" />
 
             </LinearLayout>
 
