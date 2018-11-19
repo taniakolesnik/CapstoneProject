@@ -1,4 +1,4 @@
-package uk.co.taniakolesnik.capstoneproject.ui;
+package uk.co.taniakolesnik.capstoneproject.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,17 +16,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 import uk.co.taniakolesnik.capstoneproject.R;
-import uk.co.taniakolesnik.capstoneproject.objects.Workshop;
+import uk.co.taniakolesnik.capstoneproject.models.Workshop;
 import uk.co.taniakolesnik.capstoneproject.tools.TinyDB;
 import uk.co.taniakolesnik.capstoneproject.ui_tools.DatePickerFragment;
-import uk.co.taniakolesnik.capstoneproject.ui_tools.HelpMethods;
 import uk.co.taniakolesnik.capstoneproject.ui_tools.TimePickerFragment;
 
 public class WorkshopDetailsActivity extends AppCompatActivity implements TimePickerFragment.TimeListener, DatePickerFragment.DateListener {
@@ -80,7 +83,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
         time = mWorkshop.getTime();
 
         descEditText.setText(description);
-        pickDateButton.setText(HelpMethods.getUserFreindlyDate(date));
+        pickDateButton.setText(getUserFriendlyDate(date));
         pickTimeButton.setText(time);
     }
 
@@ -223,7 +226,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
     @Override
     public void setDate(int year, int month, int day) {
         date = day + "-" + month + "-" + year;
-        pickDateButton.setText(HelpMethods.getUserFreindlyDate(date));
+        pickDateButton.setText(getUserFriendlyDate(date));
     }
 
 
@@ -231,6 +234,18 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
     public void setTime(int hourOfDay, int minute) {
         time = hourOfDay + ":" + minute;
         pickTimeButton.setText(time);
+    }
+
+    private String getUserFriendlyDate(String dateOld){
+        Date date = new Date();
+        SimpleDateFormat oldDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.UK);
+        try {
+            date = oldDateFormat.parse(dateOld);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        SimpleDateFormat newDateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.UK);
+        return newDateFormat.format(date);
     }
 
 }

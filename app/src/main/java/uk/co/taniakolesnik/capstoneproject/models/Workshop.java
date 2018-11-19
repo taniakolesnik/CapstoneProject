@@ -1,4 +1,4 @@
-package uk.co.taniakolesnik.capstoneproject.objects;
+package uk.co.taniakolesnik.capstoneproject.models;
 
 import java.io.Serializable;
 

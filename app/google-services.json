@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1044586602658-bf99nqqj5cojhhio64hl3h3do3geqku5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "uk.co.taniakolesnik.capstoneproject",
+            "certificate_hash": "d32d913d370eddab0aca8c118d27fa860de04fd2"
+          }
+        },
+        {
           "client_id": "1044586602658-ikqlp1fike2smabv64obhdfr0o36ma1v.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1044586602658-ikqlp1fike2smabv64obhdfr0o36ma1v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

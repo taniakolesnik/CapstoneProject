@@ -1,4 +1,4 @@
-package uk.co.taniakolesnik.capstoneproject.ui;
+package uk.co.taniakolesnik.capstoneproject.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +14,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 import uk.co.taniakolesnik.capstoneproject.R;
-import uk.co.taniakolesnik.capstoneproject.objects.User;
+import uk.co.taniakolesnik.capstoneproject.models.User;
 import uk.co.taniakolesnik.capstoneproject.tools.TinyDB;
 
 public class UserDetailsActivity extends AppCompatActivity {

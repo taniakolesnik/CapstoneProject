@@ -4,4 +4,7 @@
     <dimen name="test_userType">@dimen/firebase_test_user_type</dimen>
 
     <dimen name="app_bar_elevation">6dp</dimen>
+    <dimen name="margin_small">16dp</dimen>
+    <dimen name="margin_medium">24dp</dimen>
+
 </resources>

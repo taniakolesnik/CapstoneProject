@@ -11,11 +11,16 @@ import android.widget.ProgressBar;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import timber.log.Timber;
 import uk.co.taniakolesnik.capstoneproject.R;
-import uk.co.taniakolesnik.capstoneproject.objects.Workshop;
+import uk.co.taniakolesnik.capstoneproject.activities.WorkshopDetailsActivity;
+import uk.co.taniakolesnik.capstoneproject.models.Workshop;
 import uk.co.taniakolesnik.capstoneproject.tools.TinyDB;
-import uk.co.taniakolesnik.capstoneproject.ui.WorkshopDetailsActivity;
 
 public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Workshop, WorkshopViewHolder> {
 
@@ -40,7 +45,7 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
         final Workshop workshop = getItem(position);
         final String id = getRef(position).getKey();
         Timber.i("workshop id is %s", id);
-        holder.date.setText(HelpMethods.getUserFreindlyDate(workshop.getDate()));
+        holder.date.setText(getUserFriendlyDate(workshop.getDate()));
         holder.description.setText(workshop.getDescription());
         holder.getView().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,5 +67,17 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
         View itemView = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.workshop_rv_item, viewGroup, false);
         return new WorkshopViewHolder(itemView);
+    }
+
+    private String getUserFriendlyDate(String dateOld){
+        Date date = new Date();
+        SimpleDateFormat oldDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.UK);
+        try {
+            date = oldDateFormat.parse(dateOld);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        SimpleDateFormat newDateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.UK);
+        return newDateFormat.format(date);
     }
 }

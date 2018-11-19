@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="uk.co.taniakolesnik.capstoneproject">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,31 +11,36 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="capstoneproject.taniakolesnik.co.uk" />
+                <data android:host="callback"
+                    android:scheme="capstoneproject"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.WorkshopDetailsActivity"
-            android:parentActivityName=".ui.MainActivity">
+        <activity
+            android:name=".activities.WorkshopDetailsActivity"
+            android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity" />
+                android:value=".activities.MainActivity" />
         </activity>
-        <activity android:name=".ui.UserDetailsActivity"
-            android:parentActivityName=".ui.MainActivity">
+        <activity
+            android:name=".activities.UserDetailsActivity"
+            android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity" />
+                android:value=".activities.MainActivity" />
         </activity>
+        <activity android:name=".activities.AdminActivity"></activity>
     </application>
 
 </manifest>
