@@ -27,5 +27,4 @@ public interface GitHubClient  {
     @GET("user")
     Call<GitHubUser> getUserInfo(
             @Header("Authorization") String token);
-
 }

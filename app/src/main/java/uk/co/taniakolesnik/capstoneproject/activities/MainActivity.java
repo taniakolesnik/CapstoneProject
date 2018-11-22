@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -47,7 +49,9 @@ import uk.co.taniakolesnik.capstoneproject.auth.GitHubUser;
 import uk.co.taniakolesnik.capstoneproject.auth.ServiceGenerator;
 import uk.co.taniakolesnik.capstoneproject.models.City;
 import uk.co.taniakolesnik.capstoneproject.models.Workshop;
+import uk.co.taniakolesnik.capstoneproject.models.WorkshopAttendant;
 import uk.co.taniakolesnik.capstoneproject.tools.ReleaseTree;
+import uk.co.taniakolesnik.capstoneproject.tools.TinyDB;
 import uk.co.taniakolesnik.capstoneproject.ui_tools.WorkshopsFirebaseRecyclerAdapter;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -55,14 +59,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final String CLIENT_ID = "3d07ee7ebfec179b882d";
     private static final String CLIENT_SECRET = "35c07c31e0d4608f524fdc27d319b065904345aa";
     private static final String REDIRECT_URI = "capstoneproject://callback";
-    private static final String ACCESS_TOKEN_KEY = "token_key";
-
 
     private WorkshopsFirebaseRecyclerAdapter adapter;
     private List<String> citiesList;
     private String mAcceessToken;
 
     private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
+
     @BindView(R.id.workshop_rv) RecyclerView mRecyclerView;
     @BindView(R.id.progressBar) ProgressBar progressBar;
     @BindView(R.id.cities_spinner_homePage) Spinner mSpinner;
@@ -81,14 +85,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Timber.plant(new ReleaseTree());
         }
 
-        if (savedInstanceState!=null){
-            if (savedInstanceState.containsKey(ACCESS_TOKEN_KEY)){
-                mAcceessToken = savedInstanceState.getString(ACCESS_TOKEN_KEY);
-            }
-        }
-
         mAuth = FirebaseAuth.getInstance();
-       // getCitiesSpinnerList();
+        getCitiesSpinnerList();
+
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                updateUI(user);
+            }
+        };
+
 
     }
 
@@ -98,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (adapter != null){
             adapter.startListening();
         }
+        mAuth.addAuthStateListener(mAuthStateListener);
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
     }
@@ -119,15 +127,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        mAcceessToken = savedInstanceState.getString(ACCESS_TOKEN_KEY);
+    private void updateUI(final FirebaseUser user) {
+        if (user!=null) {
+            mLoginButton.setText("sigh out as " + user.getDisplayName());
+            user.getDisplayName();
+            user.getEmail();
+        } else {
+            mLoginButton.setText("Log in");
+        }
+
+        mLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (user!=null){
+                    signOut();
+                } else {
+                    startGitHubLoginIntent();
+                }
+            }
+        });
+
     }
 
-
     public void signOut() {
-        Timber.i("night signOut");
         FirebaseAuth.getInstance().signOut();
     }
 
@@ -175,6 +197,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void authFirebase(String token) {
         mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
         Timber.i("night authFirebase started with token %s", token);
         AuthCredential credential = GithubAuthProvider.getCredential(token);
         mAuth.signInWithCredential(credential)
@@ -283,32 +306,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-//    public void getWorkshopListFromTestUser(View view) {
-//        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-//        DatabaseReference databaseReference = firebaseDatabase.getReference()
-//                .child(getString(R.string.firebase_root_name))
-//                .child(getString(R.string.firebase_users_root_name)).child("-LOTNWv9b-oSw8SmiMgS")
-//                .child(getString(R.string.firebase_users_workshops_name));
-//
-//        databaseReference.addValueEventListener(new ValueEventListener() {
-//
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                ArrayList<String> workshoprsIds = new ArrayList<>();
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    String workshopid = snapshot.getKey();
-//                    workshoprsIds.add(workshopid);
-//                }
-//                Toast.makeText(getApplicationContext(), workshoprsIds.toString(), Toast.LENGTH_LONG).show();
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//
-//    }
 
     private void loadWorkshopsForCity(String city) {
         Query query;
@@ -339,39 +336,40 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         adapter.startListening();
     }
 
-    private void updateUI(final FirebaseUser user) {
-        if (user!=null) {
-            mLoginButton.setText("sigh out as " + user.getDisplayName());
-        } else {
-            mLoginButton.setText("Log in");
-        }
-
-        mLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (user!=null){
-                    signOut();
-                } else {
-                    startGitHubLoginIntent();
-                }
-            }
-        });
-
-    }
-
-
     @Override
     protected void onStop() {
         super.onStop();
         if (adapter != null){
             adapter.stopListening();
         }
+        mAuth.removeAuthStateListener(mAuthStateListener);
 
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(ACCESS_TOKEN_KEY, mAcceessToken);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (mAuth.getCurrentUser()!=null){
+            //TODO add custom fields to user auth for user type (admin, coach, student)
+            getMenuInflater().inflate(R.menu.main_admin, menu);
+        } else{
+            getMenuInflater().inflate(R.menu.main_user, menu);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+           case R.id.admin :
+            Intent intent = new Intent(this, AdminActivity.class);
+               TinyDB tinyDB = new TinyDB(this);
+               FirebaseUser user = mAuth.getCurrentUser();
+               WorkshopAttendant workshopAttendant = new WorkshopAttendant(user.getEmail(), 0, 1);
+               tinyDB.putObject(getString(R.string.firebase_user_tinyDb_key), workshopAttendant);
+               startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

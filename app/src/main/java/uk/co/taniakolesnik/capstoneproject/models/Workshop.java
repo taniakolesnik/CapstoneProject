@@ -17,7 +17,6 @@ public class Workshop implements Serializable {
     private String directions;
     private String accessibilityInfo;
 
-
     // empty constructor for firebase
     public Workshop() {
     }
@@ -134,7 +133,6 @@ public class Workshop implements Serializable {
     public void setAccessibilityInfo(String accessibilityInfo) {
         this.accessibilityInfo = accessibilityInfo;
     }
-
 
     @Override
     public String toString() {

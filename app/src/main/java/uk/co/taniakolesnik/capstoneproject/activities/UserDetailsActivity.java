@@ -7,21 +7,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 import uk.co.taniakolesnik.capstoneproject.R;
-import uk.co.taniakolesnik.capstoneproject.models.User;
-import uk.co.taniakolesnik.capstoneproject.tools.TinyDB;
 
 public class UserDetailsActivity extends AppCompatActivity {
 
 
     private boolean isNew;
-    private User mUser;
+    //private User mUser;
     public static final String INTENT_OPEN_ADD_USER_DETAILS = "add_user";
     public static final String INTENT_OPEN_UPDATE_USER_DETAILS = "update_user";
 
@@ -44,29 +39,29 @@ public class UserDetailsActivity extends AppCompatActivity {
                 isNew = true;
                 break;
             case INTENT_OPEN_UPDATE_USER_DETAILS:
-                loadUserDetails();
+                //loadUserDetails();
                 break;
         }
         setOnClickListeners();
 
     }
 
-    private void loadUserDetails() {
-        String firstName;
-        String lastName;
-        TinyDB tinydb = new TinyDB(this);
-        mUser = tinydb.getObject(getString(R.string.user_tinydb_key), User.class);
-        firstName = mUser.getFirstName();
-        lastName = mUser.getLastName();
-        firstNameEditText.setText(firstName);
-        lastNameEditText.setText(lastName);
-    }
+//    private void loadUserDetails() {
+//        String firstName;
+//        String lastName;
+////        TinyDB tinydb = new TinyDB(this);
+////        mUser = tinydb.getObject(getString(R.string.user_tinydb_key), User.class);
+////        firstName = mUser.getFirstName();
+////        lastName = mUser.getLastName();
+//        firstNameEditText.setText(firstName);
+//        lastNameEditText.setText(lastName);
+//    }
 
     private void setOnClickListeners() {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveUser();
+               // saveUser();
                 finish();
 
             }
@@ -80,25 +75,25 @@ public class UserDetailsActivity extends AppCompatActivity {
         });
     }
 
-    private void saveUser() {
-
-        String firstName = firstNameEditText.getText().toString();
-        String lastName = lastNameEditText.getText().toString();
-        String pronouns = getString(R.string.test_pronouns);
-        String email = getString(R.string.test_email);
-        int userType = 4;
-        User updatedOrNewUser = new User(firstName, lastName, pronouns, email, userType);
-
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference()
-                .child(getString(R.string.firebase_root_name))
-                .child(getString(R.string.firebase_users_root_name));
-
-        if (isNew) {
-            databaseReference.push().setValue(updatedOrNewUser);
-        } else {
-            databaseReference.child("-LOTNWv9b-oSw8SmiMgS").setValue(updatedOrNewUser);
-        }
-    }
+//    private void saveUser() {
+//
+//        String firstName = firstNameEditText.getText().toString();
+//        String lastName = lastNameEditText.getText().toString();
+//        String pronouns = getString(R.string.test_pronouns);
+//        String email = getString(R.string.test_email);
+//        int userType = 4;
+//        User updatedOrNewUser = new User(firstName, lastName, pronouns, email, userType);
+//
+//        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+//        DatabaseReference databaseReference = firebaseDatabase.getReference()
+//                .child(getString(R.string.firebase_root_name))
+//                .child(getString(R.string.firebase_users_root_name));
+//
+//        if (isNew) {
+//            databaseReference.push().setValue(updatedOrNewUser);
+//        } else {
+//            databaseReference.child("-LOTNWv9b-oSw8SmiMgS").setValue(updatedOrNewUser);
+//        }
+//    }
 
 }

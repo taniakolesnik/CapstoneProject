@@ -8,26 +8,26 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 import uk.co.taniakolesnik.capstoneproject.R;
 import uk.co.taniakolesnik.capstoneproject.models.Workshop;
+import uk.co.taniakolesnik.capstoneproject.models.WorkshopAttendant;
 import uk.co.taniakolesnik.capstoneproject.tools.TinyDB;
 import uk.co.taniakolesnik.capstoneproject.ui_tools.DatePickerFragment;
 import uk.co.taniakolesnik.capstoneproject.ui_tools.TimePickerFragment;
@@ -39,6 +39,8 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
     private String time;
     private boolean isNew;
     private Workshop mWorkshop;
+    private ArrayList<WorkshopAttendant> users;
+    private WorkshopAttendant user;
     public static final String INTENT_OPEN_ADD_WORKSHOP_DETAILS = "add_workshop";
     public static final String INTENT_OPEN_UPDATE_WORKSHOP_DETAILS = "update_workshop";
 
@@ -65,17 +67,20 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
                 break;
             case INTENT_OPEN_UPDATE_WORKSHOP_DETAILS:
                 id = intent.getExtras().getString(getString(R.string.workshop_id_tinydb_key));
-                Timber.i("get from intent workshop id is %s", id);
-                loadWorkshopDetails();
+                loadExistentWorshopDetails();
                 setTitle(getString(R.string.workshop_update_title));
-                checkIfWorkshopAddedToUser();
+                //checkIfWorkshopAddedToUser();
                 break;
         }
+
+        TinyDB tinyDB = new TinyDB(this);
+        user = tinyDB.getObject(getString(R.string.firebase_user_tinyDb_key), WorkshopAttendant.class) ;
+        users = new ArrayList<>();
         setOnClickListeners();
 
     }
 
-    private void loadWorkshopDetails() {
+    private void loadExistentWorshopDetails() {
         TinyDB tinydb = new TinyDB(this);
         mWorkshop = tinydb.getObject(getString(R.string.workshop_tinydb_key), Workshop.class);
         String description = mWorkshop.getDescription();
@@ -85,6 +90,39 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
         descEditText.setText(description);
         pickDateButton.setText(getUserFriendlyDate(date));
         pickTimeButton.setText(time);
+
+        getSignedUser();
+    }
+
+    private void getSignedUser() {
+        DatabaseReference databaseReference = FirebaseDatabase
+                .getInstance()
+                .getReference()
+                .child(getString(R.string.firebase_root_name))
+                .child(getString(R.string.firebase_workshops_root_name))
+                .child(id)
+                .child("users");
+        Query query = databaseReference.orderByChild("email");
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                users.clear();
+                for (DataSnapshot dataSnapshotItem : dataSnapshot.getChildren()){
+                    WorkshopAttendant user = dataSnapshotItem.getValue(WorkshopAttendant.class);
+                    int userStatus = user.getRole();
+                    String email = user.getEmail();
+                    Timber.i("new city found and added %s, %d",
+                            email, userStatus);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     private void setOnClickListeners() {
@@ -117,6 +155,13 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
         String postCode = getString(R.string.test_postCode);
         String directions = getString(R.string.test_directions);
         String accessibilityInfo = getString(R.string.test_accessibilityInfo);
+        //get current user info
+        if (isNew){
+            users = new ArrayList<>();
+            users.add(user);
+        }  else {
+            //TODO load current list
+        }
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference()
@@ -134,70 +179,69 @@ public class WorkshopDetailsActivity extends AppCompatActivity implements TimePi
     }
 
 
-    public void addWorkshopToTestUser(View view) {
+    public void signForWorkshop(View view) {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference()
                 .child(getString(R.string.firebase_root_name))
-                .child(getString(R.string.firebase_users_root_name)).child("-LOTNWv9b-oSw8SmiMgS");
-
-        Map<String, String> map = new HashMap<>();
-        map.put(getString(R.string.firebase_user_workshop_status_key),
-                getString(R.string.firebase_user_workshop_status_attending));
-        map.put(getString(R.string.firebase_user_workshop_date_signed_key),
-                String.valueOf(System.currentTimeMillis()));
-        databaseReference
-                .child(getString(R.string.firebase_users_workshops_name))
+                .child(getString(R.string.firebase_workshops_root_name))
                 .child(id)
-                .setValue(map);
+                .child("users");
+        databaseReference.push().setValue(user);
     }
 
-    public void updateWorkshopStatusToWaiting(View view) {
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference()
-                .child(getString(R.string.firebase_root_name))
-                .child(getString(R.string.firebase_users_root_name))
-                .child("-LOTNWv9b-oSw8SmiMgS")
-                .child(getString(R.string.firebase_users_workshops_name))
-                .child(id)
-                .child(getString(R.string.firebase_user_workshop_status_key));
-
-        databaseReference.setValue(getString(R.string.firebase_user_workshop_status_awaiting));
-    }
 
     public void removeWorkshopFromUser(View view) {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference()
+        final DatabaseReference databaseReference = firebaseDatabase.getReference()
                 .child(getString(R.string.firebase_root_name))
-                .child(getString(R.string.firebase_users_root_name))
-                .child("-LOTNWv9b-oSw8SmiMgS") //userid
-                .child(getString(R.string.firebase_users_workshops_name))
-                .child(id);
-        databaseReference.removeValue();
+                .child(getString(R.string.firebase_workshops_root_name))
+                .child(id)
+                .child("users");
+
+        Timber.i("night current user email is %s", user.getEmail());
+
+        databaseReference.orderByChild("email")
+                .equalTo(user.getEmail())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot dataSnapshotItem : dataSnapshot.getChildren()){
+                            dataSnapshotItem.getRef().removeValue();
+                            Timber.i("night onDataChange remove valuse");
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
     }
 
-    private void checkIfWorkshopAddedToUser() {
-        DatabaseReference databaseReference =  FirebaseDatabase.getInstance().getReference()
-                .child(getString(R.string.firebase_root_name))
-                .child(getString(R.string.firebase_users_root_name))
-                .child("-LOTNWv9b-oSw8SmiMgS") //userid
-                .child(getString(R.string.firebase_users_workshops_name));
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Timber.i("onDataChange triggered workshop id is %s", id);
-               if (dataSnapshot.hasChild(id)) {
-                   Toast.makeText(getApplicationContext(), "workshops already added", Toast.LENGTH_LONG).show();
-               } else {
-                   Toast.makeText(getApplicationContext(), "workshops NOT added", Toast.LENGTH_LONG).show();
-               }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
+//    private void checkIfWorkshopAddedToUser() {
+//        DatabaseReference databaseReference =  FirebaseDatabase.getInstance().getReference()
+//                .child(getString(R.string.firebase_root_name))
+//                .child(getString(R.string.firebase_users_root_name))
+//                .child("-LOTNWv9b-oSw8SmiMgS") //userid
+//                .child(getString(R.string.firebase_users_workshops_name));
+//        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                Timber.i("onDataChange triggered workshop id is %s", id);
+//               if (dataSnapshot.hasChild(id)) {
+//                   Toast.makeText(getApplicationContext(), "workshops already added", Toast.LENGTH_LONG).show();
+//               } else {
+//                   Toast.makeText(getApplicationContext(), "workshops NOT added", Toast.LENGTH_LONG).show();
+//               }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
     public void showDatePickerDialog(View v) {
         DialogFragment dialogFragment = new DatePickerFragment();

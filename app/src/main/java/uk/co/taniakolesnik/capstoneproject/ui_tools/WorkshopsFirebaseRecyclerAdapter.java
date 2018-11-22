@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import timber.log.Timber;
 import uk.co.taniakolesnik.capstoneproject.R;
 import uk.co.taniakolesnik.capstoneproject.activities.WorkshopDetailsActivity;
 import uk.co.taniakolesnik.capstoneproject.models.Workshop;
@@ -44,7 +43,6 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
     protected void onBindViewHolder(@NonNull final WorkshopViewHolder holder, final int position, @NonNull final Workshop model) {
         final Workshop workshop = getItem(position);
         final String id = getRef(position).getKey();
-        Timber.i("workshop id is %s", id);
         holder.date.setText(getUserFriendlyDate(workshop.getDate()));
         holder.description.setText(workshop.getDescription());
         holder.getView().setOnClickListener(new View.OnClickListener() {
@@ -52,7 +50,7 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
             public void onClick(View v) {
                 TinyDB tinyDB = new TinyDB(mContext);
                 tinyDB.putObject(mContext.getString(R.string.workshop_tinydb_key), workshop);
-
+                tinyDB.putObject(mContext.getString(R.string.workshop_tinydb_key), workshop);
                 Intent intent = new Intent(mContext, WorkshopDetailsActivity.class);
                 intent.putExtra(mContext.getString(R.string.open_workshop_details_intent_key),
                         WorkshopDetailsActivity.INTENT_OPEN_UPDATE_WORKSHOP_DETAILS);
