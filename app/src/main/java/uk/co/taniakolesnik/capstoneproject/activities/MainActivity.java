@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,7 +16,13 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -47,13 +52,17 @@ import uk.co.taniakolesnik.capstoneproject.ui_tools.WorkshopsFirebaseRecyclerAda
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private String CLIENT_ID = "3d07ee7ebfec179b882d";
-    private String CLIENT_SECRET = "f1948fd03a79b547cad30ebeaaad4b36084d0f3f";
-    private String REDIRECT_URI = "capstoneproject://callback";
+    private static final String CLIENT_ID = "3d07ee7ebfec179b882d";
+    private static final String CLIENT_SECRET = "35c07c31e0d4608f524fdc27d319b065904345aa";
+    private static final String REDIRECT_URI = "capstoneproject://callback";
+    private static final String ACCESS_TOKEN_KEY = "token_key";
+
 
     private WorkshopsFirebaseRecyclerAdapter adapter;
     private List<String> citiesList;
+    private String mAcceessToken;
 
+    private FirebaseAuth mAuth;
     @BindView(R.id.workshop_rv) RecyclerView mRecyclerView;
     @BindView(R.id.progressBar) ProgressBar progressBar;
     @BindView(R.id.cities_spinner_homePage) Spinner mSpinner;
@@ -65,50 +74,64 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         } else {
             Timber.plant(new ReleaseTree());
         }
 
-        //getCitiesSpinnerList();
-        
-        mLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loginGitHub();
+        if (savedInstanceState!=null){
+            if (savedInstanceState.containsKey(ACCESS_TOKEN_KEY)){
+                mAcceessToken = savedInstanceState.getString(ACCESS_TOKEN_KEY);
             }
-        });
+        }
 
+        mAuth = FirebaseAuth.getInstance();
+       // getCitiesSpinnerList();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (adapter != null){
+            adapter.startListening();
+        }
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        updateUI(currentUser);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Timber.i("night onResume started");
+
         Uri uri = getIntent().getData();
         if (uri != null && uri.toString().startsWith(REDIRECT_URI)){
             String code = uri.getQueryParameter("code");
-            Log.i("night", "onResume code is " + code);
-            GitHubClient client = ServiceGenerator.createService(GitHubClient.class);
-            Call<AccessToken> call = client.getAccessToken(CLIENT_ID, CLIENT_SECRET, code);
-            call.enqueue(new Callback<AccessToken>() {
-                @Override
-                public void onResponse(Call<AccessToken> call, Response<AccessToken> response) {
-                    Log.i("night", "onResume onResponse success");
-//                    String accessToken = response.body().getAccessToken();
-//                    getUserInfo(accessToken);
-                }
-
-                @Override
-                public void onFailure(Call<AccessToken> call, Throwable t) {
-                    Log.i("night", "onResume onFailure " + t.toString());
-                }
-            });
-
+            String error = uri.getQueryParameter("error");
+            if (code != null) {
+                getAccessToken(code);
+            } else if (error != null) {
+                Timber.i("night onResume error getting code %s ", error);
+            }
         }
     }
 
-    private void loginGitHub() {
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mAcceessToken = savedInstanceState.getString(ACCESS_TOKEN_KEY);
+    }
+
+
+    public void signOut() {
+        Timber.i("night signOut");
+        FirebaseAuth.getInstance().signOut();
+    }
+
+    private void startGitHubLoginIntent() {
         // https://github.com/login/oauth/authorize
         Uri uri = new Uri.Builder()
                 .scheme("https")
@@ -120,40 +143,92 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .appendQueryParameter("redirect_uri", REDIRECT_URI)
                 .appendQueryParameter("scope", "user")
                 .build();
-        Log.i("night", "loginGitHub " + uri.toString());
+        Timber.i("night startGitHubLoginIntent uri is %s", uri.toString());
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
 
     }
 
-    private void getUserInfo(String accessToken) {
-        Log.i("night", " getUserInfo started");
-        GitHubClient client = ServiceGenerator.createApiService(GitHubClient.class);
-        Call<GitHubUser> call = client.getUserInfo("Bearer " + accessToken);
-        call.enqueue(new Callback<GitHubUser>() {
+    private void getAccessToken(String code){
+        Timber.i("night getAccessToken started with code %s", code);
+        GitHubClient client = ServiceGenerator.createService(GitHubClient.class);
+        Call<AccessToken> call = client.getAccessToken(CLIENT_ID, CLIENT_SECRET, code);
+        call.enqueue(new Callback<AccessToken>() {
             @Override
-            public void onResponse(Call<GitHubUser> call, Response<GitHubUser> response) {
-                GitHubUser user = response.body();
-                String email = user.getEmail();
-                String login = user.getLogin();
-                String avatarUrl = user.getAvatarUrl();
-                String userName = user.getUserName();
-                Toast.makeText(getApplicationContext(), email
-                                + "\n"
-                                + login
-                                + "\n"
-                                + avatarUrl
-                                + "\n"
-                                + userName,
-                        Toast.LENGTH_LONG).show();
+            public void onResponse(Call<AccessToken> call, Response<AccessToken> response) {
+                if (response.body() != null) {
+                    mAcceessToken = response.body().getAccessToken();
+                    Timber.i("night getAccessToken mAcceessToken is %s", mAcceessToken);
+                    getUserInfo();
+                    authFirebase(mAcceessToken);
+                }
+
             }
 
             @Override
-            public void onFailure(Call<GitHubUser> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Epic fail, Tanushka",
-                        Toast.LENGTH_LONG).show();
+            public void onFailure(Call<AccessToken> call, Throwable t) {
+                mAcceessToken = null;
             }
         });
+    }
+
+
+    private void authFirebase(String token) {
+        mAuth = FirebaseAuth.getInstance();
+        Timber.i("night authFirebase started with token %s", token);
+        AuthCredential credential = GithubAuthProvider.getCredential(token);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            Timber.i("night authFirebase failed getException is %s", task.getException().toString());
+                        } else {
+                            Toast.makeText(MainActivity.this, "Authentication success.",
+                                    Toast.LENGTH_SHORT).show();
+                            Timber.i("night authFirebase successmAcceessToken is %s", mAcceessToken);
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            updateUI(user);
+
+                        }
+                    }
+                });
+    }
+
+
+    private void getUserInfo() {
+        Timber.i("night getUserInfo started for accessToken %s", mAcceessToken);
+        if (mAcceessToken!=null){
+            GitHubClient client = ServiceGenerator.createApiService(GitHubClient.class);
+            Call<GitHubUser> call = client.getUserInfo("Bearer " + mAcceessToken);
+            call.enqueue(new Callback<GitHubUser>() {
+                @Override
+                public void onResponse(Call<GitHubUser> call, Response<GitHubUser> response) {
+                    Timber.i("night getUserInfo onResponse");
+                    GitHubUser user = response.body();
+                    String email = user.getEmail();
+                    String login = user.getLogin();
+                    String avatarUrl = user.getAvatarUrl();
+                    String userName = user.getUserName();
+                    Toast.makeText(getApplicationContext(), email
+                                    + "\n"
+                                    + login
+                                    + "\n"
+                                    + avatarUrl
+                                    + "\n"
+                                    + userName,
+                            Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onFailure(Call<GitHubUser> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), "Epic fail, Tanushka",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
 
@@ -264,23 +339,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         adapter.startListening();
     }
 
-    private void updateUI(FirebaseUser currentUser) {
-        if (currentUser != null) {
-            mLoginButton.setText("sigh out as " + currentUser.getDisplayName());
+    private void updateUI(final FirebaseUser user) {
+        if (user!=null) {
+            mLoginButton.setText("sigh out as " + user.getDisplayName());
         } else {
             mLoginButton.setText("Log in");
         }
 
+        mLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (user!=null){
+                    signOut();
+                } else {
+                    startGitHubLoginIntent();
+                }
+            }
+        });
+
     }
 
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (adapter != null){
-            adapter.startListening();
-        }
-    }
 
     @Override
     protected void onStop() {
@@ -288,5 +366,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (adapter != null){
             adapter.stopListening();
         }
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(ACCESS_TOKEN_KEY, mAcceessToken);
     }
 }

@@ -34,4 +34,5 @@ public class ServiceGenerator {
     public static <S> S createApiService(Class<S> serviceClass){
         return retrofitAPI.create(serviceClass);
     }
+
 }

@@ -71,6 +71,16 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+                <Button
+                    android:id="@+id/login_bn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_gravity="center_horizontal"
+                    android:text="login with Git Hub" />
+
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -136,14 +146,6 @@
                     <!--android:onClick="addNewCity"-->
                     <!--android:text="add new city" />-->
 
-                <Button
-                    android:id="@+id/login_bn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_gravity="center_horizontal"
-                    android:text="login with Git Hub" />
 
 
             </LinearLayout>
