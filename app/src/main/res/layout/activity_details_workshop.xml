@@ -39,24 +39,9 @@
         android:text="@string/cancel_button_text" />
 
     <Button
-        android:id="@+id/add_ws_to_user_bt"
+        android:id="@+id/sing_in_or_out_ws_from_user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="signForWorkshop"
-        android:text="@string/add_workshop_to_testUser" />
-
-    <Button
-        android:id="@+id/update_ws_status_to_waiting"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="updateWorkshopStatusToWaiting"
-        android:text="Update Workshop to waiting " />
-
-    <Button
-        android:id="@+id/remove_ws_from_user"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="removeWorkshopFromUser"
-        android:text="Remove Workshop from user " />
+        android:onClick="removeWorkshopFromUser" />
 
 </LinearLayout>

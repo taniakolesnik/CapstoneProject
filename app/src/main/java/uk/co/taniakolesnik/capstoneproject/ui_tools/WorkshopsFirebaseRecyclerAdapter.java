@@ -50,11 +50,10 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
             public void onClick(View v) {
                 TinyDB tinyDB = new TinyDB(mContext);
                 tinyDB.putObject(mContext.getString(R.string.workshop_tinydb_key), workshop);
-                tinyDB.putObject(mContext.getString(R.string.workshop_tinydb_key), workshop);
                 Intent intent = new Intent(mContext, WorkshopDetailsActivity.class);
                 intent.putExtra(mContext.getString(R.string.open_workshop_details_intent_key),
                         WorkshopDetailsActivity.INTENT_OPEN_UPDATE_WORKSHOP_DETAILS);
-                intent.putExtra(mContext.getString(R.string.workshop_id_tinydb_key), id);
+                intent.putExtra(mContext.getString(R.string.current_workshop_id_key), id);
                 mContext.startActivity(intent);
             }
         });

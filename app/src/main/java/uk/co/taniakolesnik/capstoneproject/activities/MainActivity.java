@@ -62,8 +62,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private WorkshopsFirebaseRecyclerAdapter adapter;
     private List<String> citiesList;
-    private String mAcceessToken;
 
+    private String mAcceessToken;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         mAuth = FirebaseAuth.getInstance();
         getCitiesSpinnerList();
-
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -113,8 +112,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onResume() {
         super.onResume();
-        Timber.i("night onResume started");
-
         Uri uri = getIntent().getData();
         if (uri != null && uri.toString().startsWith(REDIRECT_URI)){
             String code = uri.getQueryParameter("code");
@@ -122,7 +119,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if (code != null) {
                 getAccessToken(code);
             } else if (error != null) {
-                Timber.i("night onResume error getting code %s ", error);
             }
         }
     }
@@ -165,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .appendQueryParameter("redirect_uri", REDIRECT_URI)
                 .appendQueryParameter("scope", "user")
                 .build();
-        Timber.i("night startGitHubLoginIntent uri is %s", uri.toString());
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
 
@@ -196,8 +191,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     private void authFirebase(String token) {
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
         Timber.i("night authFirebase started with token %s", token);
         AuthCredential credential = GithubAuthProvider.getCredential(token);
         mAuth.signInWithCredential(credential)
@@ -222,14 +215,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     private void getUserInfo() {
-        Timber.i("night getUserInfo started for accessToken %s", mAcceessToken);
         if (mAcceessToken!=null){
             GitHubClient client = ServiceGenerator.createApiService(GitHubClient.class);
             Call<GitHubUser> call = client.getUserInfo("Bearer " + mAcceessToken);
             call.enqueue(new Callback<GitHubUser>() {
                 @Override
                 public void onResponse(Call<GitHubUser> call, Response<GitHubUser> response) {
-                    Timber.i("night getUserInfo onResponse");
                     GitHubUser user = response.body();
                     String email = user.getEmail();
                     String login = user.getLogin();
@@ -247,8 +238,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 @Override
                 public void onFailure(Call<GitHubUser> call, Throwable t) {
-                    Toast.makeText(getApplicationContext(), "Epic fail, Tanushka",
-                            Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -257,7 +246,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     private void getCitiesSpinnerList() {
-
         citiesList = new ArrayList<>();
         citiesList.add(getString(R.string.spinner_cities_all_value));
         final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, citiesList);
@@ -278,7 +266,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     City city = dataSnapshotItem.getValue(City.class);
                     String name = city.getName();
                     citiesList.add(name);
-                    Timber.i("new city found and added %s", name);
                 }
                 spinnerAdapter.notifyDataSetChanged();
             }
@@ -305,7 +292,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-
 
     private void loadWorkshopsForCity(String city) {
         Query query;
@@ -365,8 +351,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Intent intent = new Intent(this, AdminActivity.class);
                TinyDB tinyDB = new TinyDB(this);
                FirebaseUser user = mAuth.getCurrentUser();
-               WorkshopAttendant workshopAttendant = new WorkshopAttendant(user.getEmail(), 0, 1);
-               tinyDB.putObject(getString(R.string.firebase_user_tinyDb_key), workshopAttendant);
+               if (user!=null){
+                   WorkshopAttendant workshopAttendant = new WorkshopAttendant(user.getEmail(), 0, 1);
+                   tinyDB.putObject(getString(R.string.firebase_user_tinyDb_key), workshopAttendant);
+               }
                startActivity(intent);
             return true;
         }

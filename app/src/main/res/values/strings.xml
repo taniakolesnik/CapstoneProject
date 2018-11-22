@@ -7,7 +7,7 @@
 
     <string name="open_workshop_details_intent_key">open_workshop_details_intent_key</string>
     <string name="workshop_tinydb_key">workshop_tinydb</string>
-    <string name="workshop_id_tinydb_key">workshop_id_tinydb</string>
+    <string name="current_workshop_id_key">workshop_id_key</string>
 
     <string name="open_user_details_intent_key">open_user_details_intent_key</string>
     <string name="user_tinydb_key">user_tinydb</string>
