@@ -44,17 +44,6 @@ public class AdminActivity extends AppCompatActivity {
             }
         });
 
-//        addUserButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getApplicationContext(), UserDetailsActivity.class);
-//                intent.putExtra(getString(R.string.open_user_details_intent_key),
-//                        UserDetailsActivity.INTENT_OPEN_ADD_USER_DETAILS);
-//                startActivity(intent);
-//            }
-//        });
-
-
         addNewCityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
