@@ -1,11 +1,14 @@
 package uk.co.taniakolesnik.capstoneproject.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,9 +16,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -57,6 +62,8 @@ public class WorkshopDetailsActivity extends AppCompatActivity
     @BindView(R.id.ws_name_et) TextInputEditText nameEditText;
     @BindView(R.id.ws_address_et) TextInputEditText addressEditText;
     @BindView(R.id.cities_spinner_wsPage) Spinner mSpinner;
+    @BindView(R.id.add_city_bt) Button mAddCityButton;
+
     private String id;
     private String date;
     private String time;
@@ -153,6 +160,16 @@ public class WorkshopDetailsActivity extends AppCompatActivity
     }
 
     private void setOnClickListeners() {
+
+        mAddCityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Timber.i("night mAddCityButton click done");
+                loadAddNewCityDialogue();
+            }
+        });
+
+
         signToWorkshopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -311,6 +328,51 @@ public class WorkshopDetailsActivity extends AppCompatActivity
 
                     }
                 });
+    }
+
+    private void loadAddNewCityDialogue() {
+        Timber.i("night loadAddNewCityDialogue started");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Add new city");
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String newCity = input.getText().toString();
+                if (TextUtils.isEmpty(newCity)){
+                    Toast.makeText(getApplicationContext(), "Please add city name", Toast.LENGTH_SHORT).show();
+                } else {
+                    addCity(newCity);
+                }
+
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+
+    private void addCity(String newCity){
+        if (newCity.isEmpty()||newCity==""){
+            return;
+        } else {
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
+                    .child(getString(R.string.firebase_root_name))
+                    .child(getString(R.string.firebase_cities_root_name));
+            City city = new City();
+            city.setName(newCity);
+            databaseReference.push().setValue(city);
+        }
     }
 
     public void showDatePickerDialog(View v) {

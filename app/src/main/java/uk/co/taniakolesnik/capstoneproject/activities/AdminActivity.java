@@ -37,12 +37,7 @@ public class AdminActivity extends AppCompatActivity {
         addNewCityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
-                        .child(getString(R.string.firebase_root_name))
-                        .child(getString(R.string.firebase_cities_root_name));
-                City city = new City();
-                city.setName("San Diego");
-                databaseReference.push().setValue(city);
+
             }
         });
 

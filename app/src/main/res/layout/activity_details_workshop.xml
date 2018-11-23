@@ -51,12 +51,26 @@
             android:hint="@string/workshop_address_editText_hint"/>
     </android.support.design.widget.TextInputLayout>
 
-    <Spinner
-        android:id="@+id/cities_spinner_wsPage"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="@dimen/margin_small" />
+        android:orientation="horizontal">
+
+    <Spinner
+        android:id="@+id/cities_spinner_wsPage"
+        android:layout_width="0dp"
+        android:layout_weight="4"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal" />
+
+    <Button
+        android:id="@+id/add_city_bt"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="wrap_content"
+        android:text="Add city"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
