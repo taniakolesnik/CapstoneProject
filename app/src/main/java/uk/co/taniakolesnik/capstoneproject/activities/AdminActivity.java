@@ -24,7 +24,6 @@ import uk.co.taniakolesnik.capstoneproject.models.City;
 public class AdminActivity extends AppCompatActivity {
 
     @BindView(R.id.add_workshop_bn) Button addWorkshopButton;
-    @BindView(R.id.add_user_bn) Button addUserButton;
     @BindView(R.id.add_new_city_bn) Button addNewCityButton;
     @BindView(R.id.retrieve_ws_from_user) Button getUserWorkshopsButton;
 
@@ -45,15 +44,15 @@ public class AdminActivity extends AppCompatActivity {
             }
         });
 
-        addUserButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), UserDetailsActivity.class);
-                intent.putExtra(getString(R.string.open_user_details_intent_key),
-                        UserDetailsActivity.INTENT_OPEN_ADD_USER_DETAILS);
-                startActivity(intent);
-            }
-        });
+//        addUserButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getApplicationContext(), UserDetailsActivity.class);
+//                intent.putExtra(getString(R.string.open_user_details_intent_key),
+//                        UserDetailsActivity.INTENT_OPEN_ADD_USER_DETAILS);
+//                startActivity(intent);
+//            }
+//        });
 
 
         addNewCityButton.setOnClickListener(new View.OnClickListener() {

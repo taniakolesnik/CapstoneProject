@@ -3,11 +3,16 @@ package uk.co.taniakolesnik.capstoneproject.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,18 +41,14 @@ public class WorkshopDetailsActivity extends AppCompatActivity
 
     public static final String INTENT_OPEN_ADD_WORKSHOP_DETAILS = "add_workshop";
     public static final String INTENT_OPEN_UPDATE_WORKSHOP_DETAILS = "update_workshop";
-    @BindView(R.id.ws_pick_date_bn)
-    Button pickDateButton;
-    @BindView(R.id.ws_pick_time_bn)
-    Button pickTimeButton;
-    @BindView(R.id.sing_in_or_out_ws_from_user)
-    Button signToWorkshopButton;
-    @BindView(R.id.ws_description_et)
-    EditText descEditText;
-    @BindView(R.id.save_ws_bn)
-    Button saveButton;
-    @BindView(R.id.cancel_save_ws_bt)
-    Button cancelButton;
+    @BindView(R.id.ws_pick_date_bn) ImageButton pickDateButton;
+    @BindView(R.id.workshop_date_tv) TextView dateTextView;
+    @BindView(R.id.ws_pick_time_bn) ImageButton pickTimeButton;
+    @BindView(R.id.workshop_time_tv) TextView timeTextView;
+    @BindView(R.id.sing_in_or_out_ws_from_user) Button signToWorkshopButton;
+    @BindView(R.id.ws_description_et) TextInputEditText descEditText;
+    @BindView(R.id.ws_name_et) TextInputEditText nameEditText;
+    @BindView(R.id.ws_address_et) TextInputEditText addressEditText;
     private String id;
     private String date;
     private String time;
@@ -100,34 +101,43 @@ public class WorkshopDetailsActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.workshop,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+            case R.id.save_ws :
+                saveWorkshop();
+                return true;
+            case R.id.cancel_ws :
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void loadExistentWorshopDetails() {
         TinyDB tinydb = new TinyDB(this);
         mWorkshop = tinydb.getObject(getString(R.string.workshop_tinydb_key), Workshop.class);
         String description = mWorkshop.getDescription();
+        String name = mWorkshop.getName();
+        String address = mWorkshop.getAddress();
         date = mWorkshop.getDate();
         time = mWorkshop.getTime();
 
         descEditText.setText(description);
-        pickDateButton.setText(getUserFriendlyDate(date));
-        pickTimeButton.setText(time);
+        nameEditText.setText(name);
+        addressEditText.setText(address);
+        dateTextView.setText(getUserFriendlyDate(date));
+        timeTextView.setText(time);
     }
 
     private void setOnClickListeners() {
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveWorkshop();
-                finish();
-
-            }
-        });
-
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
         signToWorkshopButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,17 +163,10 @@ public class WorkshopDetailsActivity extends AppCompatActivity
 
     private void saveWorkshop() {
 
+        String name = nameEditText.getText().toString();
         String description = descEditText.getText().toString();
-        String name = getString(R.string.test_name);
-        String webaddress = getString(R.string.test_webAddress);
-        String building = getString(R.string.test_buildingName);
-        String street = getString(R.string.test_street);
-        String city = getString(R.string.test_city);
-        String country = getString(R.string.test_country);
-        String postCode = getString(R.string.test_postCode);
-        String directions = getString(R.string.test_directions);
-        String accessibilityInfo = getString(R.string.test_accessibilityInfo);
-        //get current user info
+        String address = addressEditText.getText().toString();
+
         if (isNew) {
             users = new ArrayList<>();
             users.add(user);
@@ -176,15 +179,50 @@ public class WorkshopDetailsActivity extends AppCompatActivity
                 .child(getString(R.string.firebase_root_name))
                 .child(getString(R.string.firebase_workshops_root_name));
 
-        Workshop updatedOrNewWorkshop = new Workshop(date, time, description, name,
-                webaddress, building, street, city, country, postCode, directions, accessibilityInfo);
-
-        if (isNew) {
-            databaseReference.push().setValue(updatedOrNewWorkshop);
-        } else {
-            databaseReference.child(id).setValue(updatedOrNewWorkshop);
+        if (checkMandatoryFieldsSet()){
+            Workshop updatedOrNewWorkshop = new Workshop(date, time, description, name, address, "London");
+            if (isNew) {
+                databaseReference.push().setValue(updatedOrNewWorkshop);
+            } else {
+                databaseReference.child(id).setValue(updatedOrNewWorkshop);
+            }
+            finish();
         }
+
+
+
     }
+
+    private boolean checkMandatoryFieldsSet(){
+        boolean isAllMandatoryFieldsSet = true;
+
+        if (TextUtils.isEmpty(dateTextView.getText())) {
+            dateTextView.setError("Date is required!");
+            isAllMandatoryFieldsSet = false;
+        }
+
+        if (TextUtils.isEmpty(timeTextView.getText())){
+            timeTextView.setError("Time is required!");
+            isAllMandatoryFieldsSet = false;
+        }
+
+        if (TextUtils.isEmpty(nameEditText.getText())){
+            nameEditText.setError("Name is required!");
+            isAllMandatoryFieldsSet = false;
+        }
+
+        if (TextUtils.isEmpty(addressEditText.getText())){
+            addressEditText.setError("Address is required!");
+            isAllMandatoryFieldsSet = false;
+        }
+
+        return isAllMandatoryFieldsSet;
+    }
+
+
+
+
+
 
 
     public void signInForWorkshop() {
@@ -262,14 +300,14 @@ public class WorkshopDetailsActivity extends AppCompatActivity
     @Override
     public void setDate(int year, int month, int day) {
         date = day + "-" + month + "-" + year;
-        pickDateButton.setText(getUserFriendlyDate(date));
+        dateTextView.setText(getUserFriendlyDate(date));
     }
 
 
     @Override
     public void setTime(int hourOfDay, int minute) {
         time = hourOfDay + ":" + minute;
-        pickTimeButton.setText(time);
+        timeTextView.setText(time);
     }
 
     private String getUserFriendlyDate(String dateOld) {

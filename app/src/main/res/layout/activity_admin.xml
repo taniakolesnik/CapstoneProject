@@ -22,13 +22,6 @@
         android:text="@string/add_workshop_button_text" />
 
     <Button
-        android:id="@+id/add_user_bn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/add_user_button_text" />
-
-    <Button
         android:id="@+id/retrieve_ws_from_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

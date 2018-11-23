@@ -18,10 +18,9 @@
 
     <string name="workshop_update_title">Update Workshop</string>
     <string name="workshop_add_title">Add Workshop</string>
-    <string name="workshop_name_editText_hint">Workshop name</string>
+    <string name="workshop_name_editText_hint">Name</string>
     <string name="workshop_description_editText_hint">Description</string>
-    <string name="user_first_name_editText_hint">User first name</string>
-    <string name="user_last_name_editText_hint">User last name</string>
+    <string name="workshop_address_editText_hint">Address</string>
 
     <string name="pickDate_button_text">Pick date</string>
     <string name="pickTime_button_text">Pick time</string>
