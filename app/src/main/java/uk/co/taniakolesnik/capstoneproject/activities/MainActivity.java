@@ -335,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (mAuth.getCurrentUser()!=null){
-            //TODO add custom fields to user auth for user type (admin, coach, student)
+            //TODO add custom fields to user auth for user type (admin, coach, student) implement later.
             getMenuInflater().inflate(R.menu.main_admin, menu);
         } else{
             getMenuInflater().inflate(R.menu.main_user, menu);
@@ -347,15 +347,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id){
-           case R.id.admin :
-            Intent intent = new Intent(this, AdminActivity.class);
+           case R.id.addWorkshop :
+
                TinyDB tinyDB = new TinyDB(this);
                FirebaseUser user = mAuth.getCurrentUser();
+
                if (user!=null){
-                   WorkshopAttendant workshopAttendant = new WorkshopAttendant(user.getEmail(), 0, 1);
-                   tinyDB.putObject(getString(R.string.firebase_user_tinyDb_key), workshopAttendant);
+                   WorkshopAttendant currentUser = new WorkshopAttendant(user.getEmail(), 0, 1);
+                   tinyDB.putObject(getString(R.string.firebase_user_tinyDb_key), currentUser);
                }
+               Intent intent = new Intent(getApplicationContext(), WorkshopDetailsActivity.class);
+               intent.putExtra(getString(R.string.open_workshop_details_intent_key),
+                       WorkshopDetailsActivity.INTENT_OPEN_ADD_WORKSHOP_DETAILS);
                startActivity(intent);
+
             return true;
         }
         return super.onOptionsItemSelected(item);

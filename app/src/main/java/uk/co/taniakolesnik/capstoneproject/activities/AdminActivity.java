@@ -1,6 +1,5 @@
 package uk.co.taniakolesnik.capstoneproject.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -33,16 +32,7 @@ public class AdminActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin);
         ButterKnife.bind(this);
 
-        addWorkshopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), WorkshopDetailsActivity.class);
-                intent.putExtra(getString(R.string.open_workshop_details_intent_key),
-                        WorkshopDetailsActivity.INTENT_OPEN_ADD_WORKSHOP_DETAILS);
-                startActivity(intent);
 
-            }
-        });
 
         addNewCityButton.setOnClickListener(new View.OnClickListener() {
             @Override
