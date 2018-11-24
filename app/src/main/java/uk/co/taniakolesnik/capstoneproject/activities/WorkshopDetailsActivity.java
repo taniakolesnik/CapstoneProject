@@ -20,7 +20,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -332,22 +331,17 @@ public class WorkshopDetailsActivity extends AppCompatActivity
 
     private void loadAddNewCityDialogue() {
         Timber.i("night loadAddNewCityDialogue started");
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Add new city");
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
+
         builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String newCity = input.getText().toString();
-                if (TextUtils.isEmpty(newCity)){
-                    Toast.makeText(getApplicationContext(), "Please add city name", Toast.LENGTH_SHORT).show();
-                } else {
-                    addCity(newCity);
-                }
-
+                // we will catch input on getButton later ro ensure we don't save something we dont want to save
             }
         });
 
@@ -358,9 +352,30 @@ public class WorkshopDetailsActivity extends AppCompatActivity
             }
         });
 
-        builder.show();
-    }
+        final AlertDialog dialog = builder.create();
+        dialog.show();
 
+        // prevent dialog to close if city cannot be saved (already exists or input is empty)
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Timber.i("night getButton onClick started");
+                        String newCity = input.getText().toString();
+                        if (TextUtils.isEmpty(newCity)){
+                            Timber.i("night getButton City cannot be empty");
+                            dialog.setTitle("City cannot be empty");
+                        } else if (citiesList.contains(newCity)){
+                            Timber.i("night getButton City is already added");
+                            dialog.setTitle("City is already added");
+                        }
+                        else {
+                            addCity(newCity);
+                            dialog.dismiss();
+                        }
+                    }
+                });
+    }
 
     private void addCity(String newCity){
         if (newCity.isEmpty()||newCity==""){
