@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user!=null){
                     TinyDB tinyDB = new TinyDB(getApplicationContext());
-                    WorkshopAttendant currentUser = new WorkshopAttendant(user.getEmail(), 1);
+                    WorkshopAttendant currentUser = new WorkshopAttendant(user.getEmail(), 1); //Roles will added later
                     tinyDB.putObject(getString(R.string.firebase_user_tinyDb_key), currentUser);
                 }
                 updateUI(user);
@@ -174,7 +174,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void getAccessToken(String code){
-        Timber.i("night getAccessToken started with code %s", code);
         GitHubClient client = ServiceGenerator.createService(GitHubClient.class);
         Call<AccessToken> call = client.getAccessToken(CLIENT_ID, CLIENT_SECRET, code);
         call.enqueue(new Callback<AccessToken>() {
@@ -182,7 +181,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onResponse(Call<AccessToken> call, Response<AccessToken> response) {
                 if (response.body() != null) {
                     mAcceessToken = response.body().getAccessToken();
-                    Timber.i("night getAccessToken mAcceessToken is %s", mAcceessToken);
                     getUserInfo();
                     authFirebase(mAcceessToken);
                 }
@@ -198,19 +196,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     private void authFirebase(String token) {
-        Timber.i("night authFirebase started with token %s", token);
         AuthCredential credential = GithubAuthProvider.getCredential(token);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (!task.isSuccessful()) {
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
                             Timber.i("night authFirebase failed getException is %s", task.getException().toString());
                         } else {
-                            Toast.makeText(MainActivity.this, "Authentication success.",
-                                    Toast.LENGTH_SHORT).show();
                             Timber.i("night authFirebase successmAcceessToken is %s", mAcceessToken);
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
@@ -249,8 +242,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             });
         }
     }
-
-
 
     private void getCitiesSpinnerList() {
         citiesList = new ArrayList<>();
@@ -327,6 +318,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(adapter);
         adapter.startListening();
+
     }
 
     @Override
@@ -363,6 +355,51 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void checkIfWorkshopAttendanceStateForCurrentUser(final String id) {
+
+        WorkshopAttendant workshopAttendant = new WorkshopAttendant();
+
+        try {
+            TinyDB tinyDB = new TinyDB(this);
+            workshopAttendant = tinyDB.getObject(getString(R.string.firebase_user_tinyDb_key),
+                    WorkshopAttendant.class);
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
+
+        if (workshopAttendant != null){
+            final String email = workshopAttendant.getEmail();
+            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference databaseReference = firebaseDatabase.getReference()
+                    .child(getString(R.string.firebase_root_name))
+                    .child(getString(R.string.firebase_workshops_root_name))
+                    .child(id)
+                    .child("users");
+
+            Query query = databaseReference.orderByChild("email");
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    isSignedForThisWorkshop = false;
+                    for (DataSnapshot dataSnapshotItem : dataSnapshot.getChildren()) {
+                        String userEmail = (String) dataSnapshotItem.child("email").getValue();
+                        Integer userRole = dataSnapshotItem.child("role").getValue(Integer.class);
+                        WorkshopAttendant workshopAttendant = new WorkshopAttendant(userEmail, userRole);
+                        if (workshopAttendant.getEmail().equals(email)){
+                            isSignedForThisWorkshop = true;
+                            Timber.i("Sunday ADAPTER CHECK found user %s signed to workshop %s", email, id);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Timber.i(databaseError.toException(), "Sunday ADAPTER checkIfWorkshopAttendanceStateForCurrentUser failed");
+                }
+            });
+        }
     }
 
 

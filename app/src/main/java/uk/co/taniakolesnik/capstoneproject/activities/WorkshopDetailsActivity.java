@@ -103,21 +103,10 @@ public class WorkshopDetailsActivity extends AppCompatActivity
                         .child("users");
 
                 setTitle(getString(R.string.workshop_update_title));
-                TinyDB tinyDB = new TinyDB(this);
-                try {
-                    user = tinyDB.getObject(getString(R.string.firebase_user_tinyDb_key), WorkshopAttendant.class);
-                } catch (NullPointerException e){
-                    signToWorkshopButton.setVisibility(View.GONE);
-                    Timber.i(e);
-                }
-
-                if (user!=null){
-                    String email = user.getEmail();
-                    checkIfWorkshopAddedToUser(email);
-                }
                 break;
         }
 
+        checkIfWorkshopAttendanceStateForCurrentUser();
         getCitiesSpinnerList();
         users = new ArrayList<>();
 
@@ -128,6 +117,12 @@ public class WorkshopDetailsActivity extends AppCompatActivity
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkIfWorkshopAttendanceStateForCurrentUser();
     }
 
     @Override
@@ -151,35 +146,48 @@ public class WorkshopDetailsActivity extends AppCompatActivity
     }
 
 
-    private void checkIfWorkshopAddedToUser(final String email) {
+    private void checkIfWorkshopAttendanceStateForCurrentUser() {
 
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference()
-                .child(getString(R.string.firebase_root_name))
-                .child(getString(R.string.firebase_workshops_root_name))
-                .child(id)
-                .child("users");
+        TinyDB tinyDB = new TinyDB(this);
 
-        Query query = databaseReference.orderByChild("email");
-              query.addValueEventListener(new ValueEventListener() {
-                  @Override
-                  public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                      updateUI(false);
-                      for (DataSnapshot dataSnapshotItem : dataSnapshot.getChildren()) {
-                          String userEmail = (String) dataSnapshotItem.child("email").getValue();
-                          Integer userRole = dataSnapshotItem.child("role").getValue(Integer.class);
-                          WorkshopAttendant workshopAttendant = new WorkshopAttendant(userEmail, userRole);
-                          if (workshopAttendant.getEmail() == email){
-                              updateUI(true);
-                          }
-                      }
-                  }
+        try {
+            user = tinyDB.getObject(getString(R.string.firebase_user_tinyDb_key), WorkshopAttendant.class);
+        } catch (NullPointerException e){
+            signToWorkshopButton.setVisibility(View.GONE);
+            Timber.i(e);
+        }
 
-                  @Override
-                  public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Timber.i(databaseError.toException(), "checkIfWorkshopAddedToUser failed");
-                  }
-              });
+        if (user!=null){
+            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference databaseReference = firebaseDatabase.getReference()
+                    .child(getString(R.string.firebase_root_name))
+                    .child(getString(R.string.firebase_workshops_root_name))
+                    .child(id)
+                    .child("users");
+
+            Query query = databaseReference.orderByChild("email");
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    updateUI(false);
+                    for (DataSnapshot dataSnapshotItem : dataSnapshot.getChildren()) {
+                        String userEmail = (String) dataSnapshotItem.child("email").getValue();
+                        Integer userRole = dataSnapshotItem.child("role").getValue(Integer.class);
+                        WorkshopAttendant workshopAttendant = new WorkshopAttendant(userEmail, userRole);
+                        if (workshopAttendant.getEmail().equals(user.getEmail())){
+                            updateUI(true);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Timber.i(databaseError.toException(), "checkIfWorkshopAttendanceStateForCurrentUser failed");
+                }
+            });
+        }
+
+
     }
 
     private void loadExistentWorkshopDetails() {

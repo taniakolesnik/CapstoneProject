@@ -11,6 +11,8 @@ public class Workshop implements Serializable {
     private String address;
     private String city;
 
+    private boolean isChecked;
+
     // empty constructor for firebase
     public Workshop() {
     }
@@ -70,6 +72,14 @@ public class Workshop implements Serializable {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 
     @Override
