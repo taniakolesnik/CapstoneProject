@@ -5,7 +5,7 @@ public class WorkshopAttendant {
     private String email;
     private int role; // 1 - coach ; 0 - organiser ; 2 - student
 
-    public WorkshopAttendant(String userEmail, int status, int role) {
+    public WorkshopAttendant(String userEmail, int role) {
         this.email = userEmail;
         this.role = role;
     }
@@ -30,4 +30,11 @@ public class WorkshopAttendant {
         this.role = role;
     }
 
+    @Override
+    public String toString() {
+        return "WorkshopAttendant{" +
+                "email='" + email + '\'' +
+                ", role=" + role +
+                '}';
+    }
 }

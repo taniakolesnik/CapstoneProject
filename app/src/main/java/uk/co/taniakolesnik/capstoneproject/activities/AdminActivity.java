@@ -41,34 +41,6 @@ public class AdminActivity extends AppCompatActivity {
             }
         });
 
-        getUserWorkshopsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                DatabaseReference databaseReference = firebaseDatabase.getReference()
-                        .child(getString(R.string.firebase_root_name))
-                        .child(getString(R.string.firebase_workshops_root_name))
-                        .child(getString(R.string.firebase_workshops_root_name));
-
-                databaseReference.addValueEventListener(new ValueEventListener() {
-
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        ArrayList<String> workshoprsIds = new ArrayList<>();
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            String workshopid = snapshot.getKey();
-                            workshoprsIds.add(workshopid);
-                        }
-                        Toast.makeText(getApplicationContext(), workshoprsIds.toString(), Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-            }
-        });
 
 
     }

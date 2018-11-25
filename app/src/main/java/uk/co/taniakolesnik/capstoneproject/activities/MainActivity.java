@@ -91,6 +91,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user!=null){
+                    TinyDB tinyDB = new TinyDB(getApplicationContext());
+                    WorkshopAttendant currentUser = new WorkshopAttendant(user.getEmail(), 1);
+                    tinyDB.putObject(getString(R.string.firebase_user_tinyDb_key), currentUser);
+                }
                 updateUI(user);
             }
         };
@@ -146,7 +151,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void signOut() {
-        FirebaseAuth.getInstance().signOut();
+        mAuth.signOut();
+        TinyDB tinyDB = new TinyDB(getApplicationContext());
+        tinyDB.putObject(getString(R.string.firebase_user_tinyDb_key), null);
     }
 
     private void startGitHubLoginIntent() {
@@ -348,14 +355,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         int id = item.getItemId();
         switch (id){
            case R.id.addWorkshop :
-
-               TinyDB tinyDB = new TinyDB(this);
-               FirebaseUser user = mAuth.getCurrentUser();
-
-               if (user!=null){
-                   WorkshopAttendant currentUser = new WorkshopAttendant(user.getEmail(), 0, 1);
-                   tinyDB.putObject(getString(R.string.firebase_user_tinyDb_key), currentUser);
-               }
                Intent intent = new Intent(getApplicationContext(), WorkshopDetailsActivity.class);
                intent.putExtra(getString(R.string.open_workshop_details_intent_key),
                        WorkshopDetailsActivity.INTENT_OPEN_ADD_WORKSHOP_DETAILS);
@@ -365,4 +364,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }

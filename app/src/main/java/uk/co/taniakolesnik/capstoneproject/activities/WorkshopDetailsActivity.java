@@ -21,6 +21,8 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -67,7 +69,6 @@ public class WorkshopDetailsActivity extends AppCompatActivity
     private String date;
     private String time;
     private boolean isNew;
-    private boolean isSigned;
     private ArrayAdapter<String> spinnerAdapter;
     private Workshop mWorkshop;
     private String city;
@@ -93,7 +94,6 @@ public class WorkshopDetailsActivity extends AppCompatActivity
             case INTENT_OPEN_UPDATE_WORKSHOP_DETAILS:
                 id = intent.getExtras().getString(getString(R.string.current_workshop_id_key));
                 loadExistentWorkshopDetails();
-                Timber.i("night city after loadExistentWorkshopDetails is %s" , city);
 
                 FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                 databaseReference = firebaseDatabase.getReference()
@@ -104,19 +104,29 @@ public class WorkshopDetailsActivity extends AppCompatActivity
 
                 setTitle(getString(R.string.workshop_update_title));
                 TinyDB tinyDB = new TinyDB(this);
-                user = tinyDB.getObject(getString(R.string.firebase_user_tinyDb_key), WorkshopAttendant.class);
+                try {
+                    user = tinyDB.getObject(getString(R.string.firebase_user_tinyDb_key), WorkshopAttendant.class);
+                } catch (NullPointerException e){
+                    signToWorkshopButton.setVisibility(View.GONE);
+                    Timber.i(e);
+                }
+
                 if (user!=null){
                     String email = user.getEmail();
                     checkIfWorkshopAddedToUser(email);
-                } else {
-                    signToWorkshopButton.setVisibility(View.GONE);
                 }
                 break;
         }
 
         getCitiesSpinnerList();
         users = new ArrayList<>();
-        setOnClickListeners();
+
+        mAddCityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadAddNewCityDialogue();
+            }
+        });
 
     }
 
@@ -140,6 +150,38 @@ public class WorkshopDetailsActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+
+    private void checkIfWorkshopAddedToUser(final String email) {
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference()
+                .child(getString(R.string.firebase_root_name))
+                .child(getString(R.string.firebase_workshops_root_name))
+                .child(id)
+                .child("users");
+
+        Query query = databaseReference.orderByChild("email");
+              query.addValueEventListener(new ValueEventListener() {
+                  @Override
+                  public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                      updateUI(false);
+                      for (DataSnapshot dataSnapshotItem : dataSnapshot.getChildren()) {
+                          String userEmail = (String) dataSnapshotItem.child("email").getValue();
+                          Integer userRole = dataSnapshotItem.child("role").getValue(Integer.class);
+                          WorkshopAttendant workshopAttendant = new WorkshopAttendant(userEmail, userRole);
+                          if (workshopAttendant.getEmail() == email){
+                              updateUI(true);
+                          }
+                      }
+                  }
+
+                  @Override
+                  public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Timber.i(databaseError.toException(), "checkIfWorkshopAddedToUser failed");
+                  }
+              });
+    }
+
     private void loadExistentWorkshopDetails() {
         TinyDB tinydb = new TinyDB(this);
         mWorkshop = tinydb.getObject(getString(R.string.workshop_tinydb_key), Workshop.class);
@@ -157,38 +199,23 @@ public class WorkshopDetailsActivity extends AppCompatActivity
         timeTextView.setText(time);
 
     }
-
-    private void setOnClickListeners() {
-
-        mAddCityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Timber.i("night mAddCityButton click done");
-                loadAddNewCityDialogue();
-            }
-        });
-
-
-        signToWorkshopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isSigned){
-
-                    signOutFromWorkshop();
-                } else {
-
-                    signInForWorkshop();
-                }
-            }
-        });
-    }
-
-    private void updateUI(boolean isSigned){
+    private void updateUI(final boolean isSigned){
         if (isSigned){
             signToWorkshopButton.setText("Sign Out");
         } else {
             signToWorkshopButton.setText("Sign in");
         }
+
+        signToWorkshopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isSigned){
+                    signOutFromWorkshop();
+                } else {
+                    signInForWorkshop();
+                }
+            }
+        });
     }
 
     private void getCitiesSpinnerList() {
@@ -282,9 +309,15 @@ public class WorkshopDetailsActivity extends AppCompatActivity
     }
 
     public void signInForWorkshop() {
-        databaseReference.push().setValue(user);
-        isSigned = true;
-        updateUI(isSigned);
+        databaseReference.push().setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (!task.isSuccessful()){
+                    Timber.i(task.getException(), "signInForWorkshop failed ");
+                }
+            }
+        });
+
     }
 
 
@@ -296,28 +329,6 @@ public class WorkshopDetailsActivity extends AppCompatActivity
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot dataSnapshotItem : dataSnapshot.getChildren()) {
                             dataSnapshotItem.getRef().removeValue();
-                            isSigned = false;
-                            updateUI(isSigned);
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-    }
-
-    private void checkIfWorkshopAddedToUser(String email) {
-        databaseReference.orderByChild("email")
-                .equalTo(email)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot dataSnapshotItem : dataSnapshot.getChildren()) {
-                           isSigned = true;
-                           updateUI(isSigned);
                         }
 
                     }
