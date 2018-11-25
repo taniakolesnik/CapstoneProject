@@ -5,66 +5,33 @@
 
     <string name="spinner_cities_all_value">All</string>
 
-    <string name="open_workshop_details_intent_key">open_workshop_details_intent_key</string>
+
+    <string name="open_workshop_details_intent_key">ope_workshop_key</string>
     <string name="workshop_tinydb_key">workshop_tinydb</string>
     <string name="current_workshop_id_key">workshop_id_key</string>
-
-    <string name="open_user_details_intent_key">open_user_details_intent_key</string>
-    <string name="user_tinydb_key">user_tinydb</string>
 
     <string name="workshop_date_dialog_args_key">workshop_date_args</string>
     <string name="workshop_time_dialog_args_key">workshop_time_args</string>
 
+    <string name="workshop_update_title" translatable="true">Update Workshop</string>
+    <string name="workshop_add_title" translatable="true">Add Workshop</string>
+    <string name="workshop_name_editText_hint" translatable="true">Name</string>
+    <string name="workshop_description_editText_hint" translatable="true">Description</string>
+    <string name="workshop_address_editText_hint" translatable="true">Address</string>
 
-    <string name="workshop_update_title">Update Workshop</string>
-    <string name="workshop_add_title">Add Workshop</string>
-    <string name="workshop_name_editText_hint">Name</string>
-    <string name="workshop_description_editText_hint">Description</string>
-    <string name="workshop_address_editText_hint">Address</string>
+    <string name="add_workshop_menu_text" translatable="true">Add workshop</string>
 
-    <string name="pickDate_button_text">Pick date</string>
-    <string name="pickTime_button_text">Pick time</string>
-    <string name="add_workshop_to_testUser">Add workshop to test User</string>
+    <string name="firebase_root_name" translatable="false">root</string>
+    <string name="firebase_cities_root_name" translatable="false">cities</string>
+    <string name="firebase_cities_name_key" translatable="false">name</string>
+    <string name="firebase_workshop_city_name_key" translatable="false">city</string>
+    <string name="firebase_workshops_root_name" translatable="false">workshops</string>
+    <string name="firebase_user_workshop_user_list" translatable="false">users</string>
 
-    <string name="save_button_text">Save</string>
-    <string name="cancel_button_text">Cancel</string>
-    <string name="add_user_button_text">Add user</string>
-    <string name="add_workshop_button_text">Add workshop</string>
+    <string name="firebase_user_tinyDb_key" translatable="false">firebaseUserKey</string>
 
-    <string name="firebase_root_name">root</string>
-    <string name="firebase_cities_root_name">cities</string>
-    <string name="firebase_cities_name_key">name</string>
-    <string name="firebase_workshop_city_name_key">city</string>
-    <string name="firebase_workshops_root_name">workshops</string>
-
-    <string name="firebase_user_workshop_date_signed_key">date_signed</string>
-
-    <string name="firebase_user_workshop_user_list">users</string>
-    <string name="firebase_user_workshop_status_key">status</string>
-    <string name="firebase_user_workshop_status_awaiting">awaiting</string>
-    <string name="firebase_user_workshop_status_attending">attending</string>
-
-    <string name="firebase_user_tinyDb_key">firebaseUserKey</string>
-
-    <string name="test_participant">Tania Kolesnik</string>
-    <string name="test_name">Google</string>
-    <string name="test_webAddress">www.google.com</string>
-    <string name="test_buildingName">111</string>
-    <string name="test_street">8th Ave</string>
-    <string name="test_city">New York</string>
-    <string name="test_postCode">NY 10011</string>
-    <string name="test_country">USA</string>
-    <string name="test_directions">test directions</string>
-    <string name="test_accessibilityInfo">test accessibility Info</string>
-
-    <string name="test_firstName">Tania</string>
-    <string name="test_lasttName">Kolesnik</string>
-    <string name="test_pronouns">she</string>
-    <string name="test_email">kolesnik@gmail.com</string>
-    <string name="test_mobile">09898098098</string>
-    <string name="test_twitter">taniakolesnik</string>
-    <string name="test_about">top secret</string>
-
+    <string name="login_message" translatable="true">Do you fall under a under-represented group in coding? You can learn it for free with us!</string>
+    <string name="login_message_coach" translatable="true">(if you are coach, feel free to sign up too)</string>
     <!-- Main -->
     <string name="workshops_title">Workshops</string>
 

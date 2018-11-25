@@ -15,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -45,7 +44,6 @@ import uk.co.taniakolesnik.capstoneproject.BuildConfig;
 import uk.co.taniakolesnik.capstoneproject.R;
 import uk.co.taniakolesnik.capstoneproject.auth.AccessToken;
 import uk.co.taniakolesnik.capstoneproject.auth.GitHubClient;
-import uk.co.taniakolesnik.capstoneproject.auth.GitHubUser;
 import uk.co.taniakolesnik.capstoneproject.auth.ServiceGenerator;
 import uk.co.taniakolesnik.capstoneproject.models.City;
 import uk.co.taniakolesnik.capstoneproject.models.Workshop;
@@ -137,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             mLoginButton.setText("Log in");
         }
 
+        invalidateOptionsMenu();
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -181,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onResponse(Call<AccessToken> call, Response<AccessToken> response) {
                 if (response.body() != null) {
                     mAcceessToken = response.body().getAccessToken();
-                    getUserInfo();
+                    //getUserInfo();
                     authFirebase(mAcceessToken);
                 }
 
@@ -212,36 +211,36 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                 });
     }
-
-
-    private void getUserInfo() {
-        if (mAcceessToken!=null){
-            GitHubClient client = ServiceGenerator.createApiService(GitHubClient.class);
-            Call<GitHubUser> call = client.getUserInfo("Bearer " + mAcceessToken);
-            call.enqueue(new Callback<GitHubUser>() {
-                @Override
-                public void onResponse(Call<GitHubUser> call, Response<GitHubUser> response) {
-                    GitHubUser user = response.body();
-                    String email = user.getEmail();
-                    String login = user.getLogin();
-                    String avatarUrl = user.getAvatarUrl();
-                    String userName = user.getUserName();
-                    Toast.makeText(getApplicationContext(), email
-                                    + "\n"
-                                    + login
-                                    + "\n"
-                                    + avatarUrl
-                                    + "\n"
-                                    + userName,
-                            Toast.LENGTH_LONG).show();
-                }
-
-                @Override
-                public void onFailure(Call<GitHubUser> call, Throwable t) {
-                }
-            });
-        }
-    }
+//
+//
+//    private void getUserInfo() {
+//        if (mAcceessToken!=null){
+//            GitHubClient client = ServiceGenerator.createApiService(GitHubClient.class);
+//            Call<GitHubUser> call = client.getUserInfo("Bearer " + mAcceessToken);
+//            call.enqueue(new Callback<GitHubUser>() {
+//                @Override
+//                public void onResponse(Call<GitHubUser> call, Response<GitHubUser> response) {
+//                    GitHubUser user = response.body();
+//                    String email = user.getEmail();
+//                    String login = user.getLogin();
+//                    String avatarUrl = user.getAvatarUrl();
+//                    String userName = user.getUserName();
+//                    Toast.makeText(getApplicationContext(), email
+//                                    + "\n"
+//                                    + login
+//                                    + "\n"
+//                                    + avatarUrl
+//                                    + "\n"
+//                                    + userName,
+//                            Toast.LENGTH_LONG).show();
+//                }
+//
+//                @Override
+//                public void onFailure(Call<GitHubUser> call, Throwable t) {
+//                }
+//            });
+//        }
+//    }
 
     private void getCitiesSpinnerList() {
         citiesList = new ArrayList<>();
@@ -337,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             //TODO add custom fields to user auth for user type (admin, coach, student) implement later.
             getMenuInflater().inflate(R.menu.main_admin, menu);
         } else{
-            getMenuInflater().inflate(R.menu.main_user, menu);
+           // getMenuInflater().inflate(R.menu.main_user, menu); no menu for non auth users for now
         }
         return true;
     }
