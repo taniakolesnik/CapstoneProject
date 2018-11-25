@@ -94,7 +94,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity
             case INTENT_OPEN_UPDATE_WORKSHOP_DETAILS:
                 id = intent.getExtras().getString(getString(R.string.current_workshop_id_key));
                 loadExistentWorkshopDetails();
-
+                checkIfWorkshopAttendanceStateForCurrentUser();
                 FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                 databaseReference = firebaseDatabase.getReference()
                         .child(getString(R.string.firebase_root_name))
@@ -106,7 +106,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity
                 break;
         }
 
-        checkIfWorkshopAttendanceStateForCurrentUser();
+
         getCitiesSpinnerList();
         users = new ArrayList<>();
 
@@ -122,7 +122,6 @@ public class WorkshopDetailsActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        checkIfWorkshopAttendanceStateForCurrentUser();
     }
 
     @Override
@@ -397,6 +396,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity
     }
 
     private void addCity(String newCity){
+        city = newCity;
         if (newCity.isEmpty()||newCity==""){
             return;
         } else {
