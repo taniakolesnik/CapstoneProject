@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import timber.log.Timber;
 import uk.co.taniakolesnik.capstoneproject.R;
 import uk.co.taniakolesnik.capstoneproject.activities.WorkshopDetailsActivity;
 import uk.co.taniakolesnik.capstoneproject.models.Workshop;
@@ -26,7 +25,6 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
 
     private Context mContext;
     private ProgressBar progressBar;
-    private boolean isSignedForThisWorkshop;
 
     public WorkshopsFirebaseRecyclerAdapter(FirebaseRecyclerOptions<Workshop> options, Context context, ProgressBar view) {
         super(options);
@@ -44,7 +42,6 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
     @Override
     protected void onBindViewHolder(@NonNull final WorkshopViewHolder holder, final int position, @NonNull final Workshop model) {
 
-        Timber.i("Sunday ADAPTER onBindViewHolder started");
         final Workshop workshop = getItem(position);
         final String id = getRef(position).getKey();
 
