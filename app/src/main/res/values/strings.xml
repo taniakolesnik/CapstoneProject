@@ -20,6 +20,7 @@
     <string name="workshop_address_editText_hint" translatable="true">Address</string>
 
     <string name="add_workshop_menu_text" translatable="true">Add workshop</string>
+    <string name="sign_out_menu_text" translatable="true">Sign out</string>
 
     <string name="firebase_root_name" translatable="false">root</string>
     <string name="firebase_cities_root_name" translatable="false">cities</string>
@@ -30,8 +31,8 @@
 
     <string name="firebase_user_tinyDb_key" translatable="false">firebaseUserKey</string>
 
-    <string name="login_message" translatable="true">Do you fall under a under-represented group in coding? You can learn it for free with us!</string>
-    <string name="login_message_coach" translatable="true">(if you are coach, feel free to sign up too)</string>
+    <string name="login_sign_in_message" translatable="true">Or sign into your existing account</string>
+    <string name="login_sign_up_message" translatable="true">Do you fall under a under-represented group in coding? You can learn it for free with us! \n (if you are coach, feel free to sign up too)</string>
     <!-- Main -->
     <string name="workshops_title">Workshops</string>
 

@@ -6,4 +6,8 @@
         android:title="@string/add_workshop_menu_text"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/signOutMenu"
+        android:title="@string/sign_out_menu_text"
+        app:showAsAction="never"/>
+
 </menu>

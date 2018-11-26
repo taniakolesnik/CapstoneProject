@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +15,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -66,9 +69,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @BindView(R.id.workshop_rv) RecyclerView mRecyclerView;
+
+    @BindView(R.id.collapsingBarLayout) CollapsingToolbarLayout mCollapsingToolbarLayout;
+
     @BindView(R.id.progressBar) ProgressBar progressBar;
     @BindView(R.id.cities_spinner_homePage) Spinner mSpinner;
     @BindView(R.id.login_bn) Button mLoginButton;
+    @BindView(R.id.signed_header) TextView headerSigned;
+    @BindView(R.id.not_signed_header) RelativeLayout headerNotSigned;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,12 +136,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void updateUI(final FirebaseUser user) {
         if (user!=null) {
-            mLoginButton.setText("sigh out as " + user.getDisplayName());
-            user.getDisplayName();
-            user.getEmail();
+            headerNotSigned.setVisibility(View.GONE);
+            headerSigned.setVisibility(View.VISIBLE);
         } else {
             mLoginButton.setText("Log in");
+            headerNotSigned.setVisibility(View.VISIBLE);
+            headerSigned.setVisibility(View.GONE);
         }
+
+        mCollapsingToolbarLayout.requestLayout();
 
         invalidateOptionsMenu();
         mLoginButton.setOnClickListener(new View.OnClickListener() {
@@ -333,7 +344,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (mAuth.getCurrentUser()!=null){
-            //TODO add custom fields to user auth for user type (admin, coach, student) implement later.
             getMenuInflater().inflate(R.menu.main_admin, menu);
         } else{
            // getMenuInflater().inflate(R.menu.main_user, menu); no menu for non auth users for now
@@ -350,8 +360,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                intent.putExtra(getString(R.string.open_workshop_details_intent_key),
                        WorkshopDetailsActivity.INTENT_OPEN_ADD_WORKSHOP_DETAILS);
                startActivity(intent);
-
             return true;
+
+            case R.id.signOutMenu :
+                signOut();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
