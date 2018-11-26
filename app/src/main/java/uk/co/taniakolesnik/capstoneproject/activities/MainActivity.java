@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -70,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @BindView(R.id.workshop_rv) RecyclerView mRecyclerView;
 
+    @BindView(R.id.appBarLayout) AppBarLayout mAppBarLayout;
+    @BindView(R.id.toolBar) Toolbar mToolbar;
     @BindView(R.id.collapsingBarLayout) CollapsingToolbarLayout mCollapsingToolbarLayout;
 
     @BindView(R.id.progressBar) ProgressBar progressBar;
@@ -132,6 +136,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             } else if (error != null) {
             }
         }
+
+        mCollapsingToolbarLayout.requestLayout();
     }
 
     private void updateUI(final FirebaseUser user) {
