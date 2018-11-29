@@ -1,6 +1,8 @@
 package uk.co.taniakolesnik.capstoneproject.models;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Workshop implements Serializable {
 
@@ -10,20 +12,30 @@ public class Workshop implements Serializable {
     private String name;
     private String address;
     private String city;
-
-    private boolean isChecked;
+    Map<String, User> users = new HashMap<>();
 
     // empty constructor for firebase
     public Workshop() {
     }
 
-    public Workshop(String date, String time, String description, String name, String address, String city) {
+    public Workshop(String date, String time, String description, String name, String address, String city,
+                       Map<String, User> users) {
         this.date = date;
         this.time = time;
         this.description = description;
         this.name = name;
         this.address = address;
         this.city = city;
+        this.users = users;
+    }
+
+    public void setValue(Map<String, User> map)
+    {
+        this.users = map;
+    }
+    public Map<String, User> getValue()
+    {
+        return this.users;
     }
 
     public String getDate() {
@@ -72,14 +84,6 @@ public class Workshop implements Serializable {
 
     public void setCity(String city) {
         this.city = city;
-    }
-
-    public boolean isChecked() {
-        return isChecked;
-    }
-
-    public void setChecked(boolean checked) {
-        isChecked = checked;
     }
 
     @Override

@@ -34,8 +34,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -43,8 +45,8 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 import uk.co.taniakolesnik.capstoneproject.R;
 import uk.co.taniakolesnik.capstoneproject.models.City;
+import uk.co.taniakolesnik.capstoneproject.models.User;
 import uk.co.taniakolesnik.capstoneproject.models.Workshop;
-import uk.co.taniakolesnik.capstoneproject.models.WorkshopAttendant;
 import uk.co.taniakolesnik.capstoneproject.tools.TinyDB;
 import uk.co.taniakolesnik.capstoneproject.ui_tools.DatePickerFragment;
 import uk.co.taniakolesnik.capstoneproject.ui_tools.TimePickerFragment;
@@ -73,8 +75,8 @@ public class WorkshopDetailsActivity extends AppCompatActivity
     private Workshop mWorkshop;
     private String city;
     private List<String> citiesList;
-    private ArrayList<WorkshopAttendant> users;
-    private WorkshopAttendant user;
+    private HashMap<String, User> users;
+    private User user;
     private DatabaseReference databaseReference;
 
     @Override
@@ -108,7 +110,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity
 
 
         getCitiesSpinnerList();
-        users = new ArrayList<>();
+        users = new HashMap<>();
 
         mAddCityButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,7 +152,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity
         TinyDB tinyDB = new TinyDB(this);
 
         try {
-            user = tinyDB.getObject(getString(R.string.firebase_user_tinyDb_key), WorkshopAttendant.class);
+            user = tinyDB.getObject(getString(R.string.firebase_user_tinyDb_key), User.class);
         } catch (NullPointerException e){
             signToWorkshopButton.setVisibility(View.GONE);
             Timber.i(e);
@@ -172,7 +174,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity
                     for (DataSnapshot dataSnapshotItem : dataSnapshot.getChildren()) {
                         String userEmail = (String) dataSnapshotItem.child("email").getValue();
                         Integer userRole = dataSnapshotItem.child("role").getValue(Integer.class);
-                        WorkshopAttendant workshopAttendant = new WorkshopAttendant(userEmail, userRole);
+                        User workshopAttendant = new User(userEmail, userRole);
                         if (workshopAttendant.getEmail().equals(user.getEmail())){
                             updateUI(true);
                         }
@@ -265,20 +267,23 @@ public class WorkshopDetailsActivity extends AppCompatActivity
         String description = Objects.requireNonNull(descEditText.getText()).toString();
         String address = Objects.requireNonNull(addressEditText.getText()).toString();
 
-        if (isNew) {
-            users = new ArrayList<>();
-            users.add(user);
-        } else {
-            //TODO load current list
-        }
+//        if (isNew) {
+//            users = new ArrayList<>();
+//            users.add(user);
+//        } else {
+//            //TODO load current list
+//        }
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference()
                 .child(getString(R.string.firebase_root_name))
                 .child(getString(R.string.firebase_workshops_root_name));
 
+
+        Map<String, User> users = new HashMap<>();
+
         if (checkMandatoryFieldsSet()){
-            Workshop updatedOrNewWorkshop = new Workshop(date, time, description, name, address, city);
+            Workshop updatedOrNewWorkshop = new Workshop(date, time, description, name, address, city, users);
             if (isNew) {
                 databaseReference.push().setValue(updatedOrNewWorkshop);
             } else {

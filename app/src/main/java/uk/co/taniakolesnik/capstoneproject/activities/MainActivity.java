@@ -22,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.database.SnapshotParser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -33,6 +34,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -51,8 +53,8 @@ import uk.co.taniakolesnik.capstoneproject.auth.AccessToken;
 import uk.co.taniakolesnik.capstoneproject.auth.GitHubClient;
 import uk.co.taniakolesnik.capstoneproject.auth.ServiceGenerator;
 import uk.co.taniakolesnik.capstoneproject.models.City;
+import uk.co.taniakolesnik.capstoneproject.models.User;
 import uk.co.taniakolesnik.capstoneproject.models.Workshop;
-import uk.co.taniakolesnik.capstoneproject.models.WorkshopAttendant;
 import uk.co.taniakolesnik.capstoneproject.tools.ReleaseTree;
 import uk.co.taniakolesnik.capstoneproject.tools.TinyDB;
 import uk.co.taniakolesnik.capstoneproject.ui_tools.WorkshopsFirebaseRecyclerAdapter;
@@ -103,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user!=null){
                     TinyDB tinyDB = new TinyDB(getApplicationContext());
-                    WorkshopAttendant currentUser = new WorkshopAttendant(user.getEmail(), 1); //Roles will added later
+                    User currentUser = new User(user.getEmail(), 1); //Roles will added later
                     tinyDB.putObject(getString(R.string.firebase_user_tinyDb_key), currentUser);
                 }
                 updateUI(user);
@@ -319,14 +321,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     .getReference(getString(R.string.firebase_root_name))
                     .child(getString(R.string.firebase_workshops_root_name))
                     .orderByChild(getString(R.string.firebase_workshop_city_name_key))
-                    .equalTo(city);
+                    .equalTo(city).limitToLast(50);
+
         }
 
         FirebaseRecyclerOptions<Workshop> options =
                 new FirebaseRecyclerOptions.Builder<Workshop>()
-                        .setQuery(query, Workshop.class)
-                        .build();
-
+                        .setQuery(query, new SnapshotParser<Workshop>() {
+                            @NonNull
+                            @Override
+                            public Workshop parseSnapshot(@NonNull DataSnapshot snapshot) {
+                                GenericTypeIndicator<Workshop> t = new GenericTypeIndicator<Workshop>() {};
+                                Workshop workshop = snapshot.getValue(t);
+                                return workshop;
+                            }
+                        })
+                .build();
         if (adapter != null) {
             adapter.stopListening();
         }

@@ -1,17 +1,17 @@
 package uk.co.taniakolesnik.capstoneproject.models;
 
-public class WorkshopAttendant {
+public class User {
 
     private String email;
     private int role; // 1 - coach ; 0 - organiser ; 2 - student
 
-    public WorkshopAttendant(String userEmail, int role) {
+    public User(String userEmail, int role) {
         this.email = userEmail;
         this.role = role;
     }
 
     // for firebase
-    public WorkshopAttendant() {
+    public User() {
     }
 
     public String getEmail() {
@@ -32,7 +32,7 @@ public class WorkshopAttendant {
 
     @Override
     public String toString() {
-        return "WorkshopAttendant{" +
+        return "User{" +
                 "email='" + email + '\'' +
                 ", role=" + role +
                 '}';

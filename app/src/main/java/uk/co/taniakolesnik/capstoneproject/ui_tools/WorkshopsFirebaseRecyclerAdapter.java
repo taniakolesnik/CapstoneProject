@@ -15,9 +15,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 
+import timber.log.Timber;
 import uk.co.taniakolesnik.capstoneproject.R;
 import uk.co.taniakolesnik.capstoneproject.activities.WorkshopDetailsActivity;
+import uk.co.taniakolesnik.capstoneproject.models.User;
 import uk.co.taniakolesnik.capstoneproject.models.Workshop;
 import uk.co.taniakolesnik.capstoneproject.tools.TinyDB;
 
@@ -42,11 +45,22 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
     @Override
     protected void onBindViewHolder(@NonNull final WorkshopViewHolder holder, final int position, @NonNull final Workshop model) {
 
+        Timber.i("Wednesday Adapter onBindViewHolder started");
         final Workshop workshop = getItem(position);
         final String id = getRef(position).getKey();
 
         holder.date.setText(getUserFriendlyDate(workshop.getDate()));
         holder.description.setText(workshop.getDescription());
+        try {
+            Map<String, User> users = workshop.getValue();
+            int mapSize = users.size();
+            Timber.i("Thursday Adapter users  %d", mapSize);
+            if (mapSize!=0){
+                holder.description.setBackgroundColor(mContext.getColor(R.color.colorPrimaryDark));
+            }
+        } catch (NullPointerException e){
+            Timber.i(e, "Thursday Adapter no users for %s", workshop.getDescription());
+        }
 
         holder.getView().setOnClickListener(new View.OnClickListener() {
             @Override
