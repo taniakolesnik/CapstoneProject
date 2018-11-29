@@ -28,11 +28,23 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
 
     private Context mContext;
     private ProgressBar progressBar;
+    private User loggedUser;
 
     public WorkshopsFirebaseRecyclerAdapter(FirebaseRecyclerOptions<Workshop> options, Context context, ProgressBar view) {
         super(options);
         mContext = context;
         progressBar = view;
+
+        TinyDB tinyDB = new TinyDB(mContext);
+        loggedUser = new User();
+
+        try {
+            loggedUser = tinyDB.getObject(mContext.getString(R.string.firebase_user_tinyDb_key), User.class);
+            Timber.i("Thursday user from tinydb is %s", loggedUser.getEmail());
+        } catch (NullPointerException e){
+            Timber.i(e);
+        }
+
     }
 
     @Override
@@ -51,15 +63,17 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
 
         holder.date.setText(getUserFriendlyDate(workshop.getDate()));
         holder.description.setText(workshop.getDescription());
+
         try {
             Map<String, User> users = workshop.getValue();
-            int mapSize = users.size();
-            Timber.i("Thursday Adapter users  %d", mapSize);
-            if (mapSize!=0){
-                holder.description.setBackgroundColor(mContext.getColor(R.color.colorPrimaryDark));
+            for (User user : users.values()) {
+               if (user.getEmail().equals(loggedUser.getEmail())){
+                   holder.description.setBackgroundColor(mContext.getColor(R.color.colorAccent));
+               }
             }
+
         } catch (NullPointerException e){
-            Timber.i(e, "Thursday Adapter no users for %s", workshop.getDescription());
+            e.printStackTrace();
         }
 
         holder.getView().setOnClickListener(new View.OnClickListener() {
