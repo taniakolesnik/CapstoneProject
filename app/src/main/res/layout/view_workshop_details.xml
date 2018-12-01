@@ -7,9 +7,11 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/workshop_description_tv"
+        android:id="@+id/workshop_name_tv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"/>
 
     <TextView
         android:id="@+id/workshop_day_time_tv"
@@ -20,7 +22,9 @@
     <TextView
         android:id="@+id/workshop_address_tv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"/>
 
 
 </LinearLayout>

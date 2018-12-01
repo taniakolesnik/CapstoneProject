@@ -17,7 +17,7 @@ public class WorkshopViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.workshop_day_time_tv) TextView time;
     @BindView(R.id.date_tv) TextView date;
     @BindView(R.id.month_tv) TextView month;
-    @BindView(R.id.workshop_description_tv) TextView description;
+    @BindView(R.id.workshop_name_tv) TextView name;
     @BindView(R.id.workshop_address_tv) TextView address;
     @BindView(R.id.workshop_item_card) CardView cardView;
     @BindView(R.id.attendance_info_tv) TextView attendingInfoTextView;

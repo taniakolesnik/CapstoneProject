@@ -430,7 +430,6 @@ public class WorkshopDetailsActivity extends AppCompatActivity
         if (!isNew) {
             Bundle bundle = new Bundle();
             bundle.putString(getString(R.string.workshop_time_dialog_args_key), time);
-            Timber.i("time picker time is %s", time);
             dialogFragment.setArguments(bundle);
         }
         dialogFragment.show(getSupportFragmentManager(), "timePicker");
@@ -447,7 +446,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity
 
     @Override
     public void setTime(int hourOfDay, int minute) {
-        time = hourOfDay + ":" + minute;
+        time = String.format("%02d:%02d", hourOfDay, minute);
         timeTextView.setText(time);
     }
 
@@ -466,7 +465,6 @@ public class WorkshopDetailsActivity extends AppCompatActivity
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         city = citiesList.get(position);
-        Timber.i("night city is %s , %d", city, position);
     }
 
     @Override

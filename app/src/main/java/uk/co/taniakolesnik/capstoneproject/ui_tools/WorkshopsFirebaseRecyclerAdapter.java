@@ -64,9 +64,8 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
         holder.time.setText(getDayOfWeek(workshop.getDate()) + ", " + workshop.getTime());
         holder.date.setText(getDate(workshop.getDate()));
         holder.month.setText(getMonth(workshop.getDate()));
-        holder.description.setText(workshop.getDescription());
+        holder.name.setText(workshop.getName());
         holder.address.setText(workshop.getAddress());
-
 
         try {
             Map<String, User> users = workshop.getValue();
@@ -78,6 +77,9 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
                    holder.attendingInfoTextView.setVisibility(View.GONE);
                    holder.cardView.setCardBackgroundColor(mContext.getColor(R.color.colorAccent));
                    holder.dateLayout.setBackground(mContext.getDrawable(R.drawable.date_icon_layout_border_shape));
+                   holder.time.setTextColor(mContext.getColor(R.color.colorWhite));
+                   holder.name.setTextColor(mContext.getColor(R.color.colorWhite));
+                   holder.address.setTextColor(mContext.getColor(R.color.colorWhite));
                }
             }
 
