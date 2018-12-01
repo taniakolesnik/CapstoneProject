@@ -36,7 +36,7 @@ public class TimePickerFragment extends DialogFragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             if (getArguments().containsKey(getString(R.string.workshop_time_dialog_args_key))) {
-                // Use saved date_month_view as the default date_month_view in the picker
+                // Use saved view_date_month as the default view_date_month in the picker
                 String timeString = getArguments().getString(getString(R.string.workshop_time_dialog_args_key));
                 Timber.i("timeString is %s", timeString);
                 try {

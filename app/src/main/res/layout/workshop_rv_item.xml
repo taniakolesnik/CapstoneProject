@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="80dp"
+    android:layout_marginTop="6dp"
+    android:id="@+id/workshop_item_card"
+    app:cardBackgroundColor="@color/colorPrimary">
 
 
-   <include layout="@layout/date_month_view"/>
-
-
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/workshop_date_tv"/>
+        <include
+            layout="@layout/view_date_month"
+            android:layout_width="62dp"
+            android:layout_height="62dp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="8dp" />
 
+        <include
+            layout="@layout/view_workshop_details"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="8dp"
+            android:layout_weight="5" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/workshop_description_tv"/>
+        <include
+            layout="@layout/view_attendance_status"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="8dp" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/colorAccent"/>
 
     </LinearLayout>
 
-
-</LinearLayout>
+</android.support.v7.widget.CardView>

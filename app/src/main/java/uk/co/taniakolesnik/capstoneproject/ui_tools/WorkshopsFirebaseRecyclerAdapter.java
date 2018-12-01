@@ -61,14 +61,23 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
         final Workshop workshop = getItem(position);
         final String id = getRef(position).getKey();
 
-        holder.date.setText(getUserFriendlyDate(workshop.getDate()));
+        holder.time.setText(getDayOfWeek(workshop.getDate()) + ", " + workshop.getTime());
+        holder.date.setText(getDate(workshop.getDate()));
+        holder.month.setText(getMonth(workshop.getDate()));
         holder.description.setText(workshop.getDescription());
+        holder.address.setText(workshop.getAddress());
+
 
         try {
             Map<String, User> users = workshop.getValue();
             for (User user : users.values()) {
                if (user.getEmail().equals(loggedUser.getEmail())){
-                   holder.description.setBackgroundColor(mContext.getColor(R.color.colorAccent));
+                   holder.attendingBox.setBackgroundColor(mContext.getColor(R.color.colorWhite));
+                   holder.attendingBox.setBackground(mContext.getDrawable(R.drawable.attendance_status_shape_white));
+                   holder.attendingImage.setVisibility(View.VISIBLE);
+                   holder.attendingInfoTextView.setVisibility(View.GONE);
+                   holder.cardView.setCardBackgroundColor(mContext.getColor(R.color.colorAccent));
+                   holder.dateLayout.setBackground(mContext.getDrawable(R.drawable.date_icon_layout_border_shape));
                }
             }
 
@@ -97,7 +106,7 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
         return new WorkshopViewHolder(itemView);
     }
 
-    private String getUserFriendlyDate(String dateOld){
+    private String getDayOfWeek(String dateOld){
         Date date = new Date();
         SimpleDateFormat oldDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.UK);
         try {
@@ -105,8 +114,34 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        SimpleDateFormat newDateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.UK);
+        SimpleDateFormat newDateFormat = new SimpleDateFormat("EEEE", Locale.UK);
         return newDateFormat.format(date);
     }
+
+
+    private String getMonth(String dateOld){
+        Date date = new Date();
+        SimpleDateFormat oldDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.UK);
+        try {
+            date = oldDateFormat.parse(dateOld);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        SimpleDateFormat newDateFormat = new SimpleDateFormat("MMM", Locale.UK);
+        return newDateFormat.format(date);
+    }
+
+    private String getDate(String dateOld){
+        Date date = new Date();
+        SimpleDateFormat oldDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.UK);
+        try {
+            date = oldDateFormat.parse(dateOld);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        SimpleDateFormat newDateFormat = new SimpleDateFormat("dd", Locale.UK);
+        return newDateFormat.format(date);
+    }
+
 
 }

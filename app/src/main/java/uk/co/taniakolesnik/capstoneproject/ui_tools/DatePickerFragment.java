@@ -30,7 +30,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             if (getArguments().containsKey(getString(R.string.workshop_date_dialog_args_key))) {
-                // Use saved date_month_view as the default date_month_view in the picker
+                // Use saved view_date_month as the default view_date_month in the picker
                 String dateString = getArguments().getString(getString(R.string.workshop_date_dialog_args_key));
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.UK);
                 try {

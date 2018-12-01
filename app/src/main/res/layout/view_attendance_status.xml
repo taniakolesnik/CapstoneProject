@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/attendace_status_shape_red"
+    android:id="@+id/attendance_box_rl"
+    android:elevation="4dp">
+
+    <TextView
+        android:id="@+id/attendance_info_tv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:text="i"
+        android:textColor="@color/colorWhite"
+        android:textSize="24dp">
+    </TextView>
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/attendance_attending_rl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:src="@drawable/tick_red">
+        </ImageView>
+
+    </RelativeLayout>
+
+</RelativeLayout>
