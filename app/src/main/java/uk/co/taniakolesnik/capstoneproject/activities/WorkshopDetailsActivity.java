@@ -287,12 +287,14 @@ public class WorkshopDetailsActivity extends AppCompatActivity
         boolean isAllMandatoryFieldsSet = true;
 
         if (TextUtils.isEmpty(date)) {
-            pickDateButton.setError("Date is required!");
+            pickDateButton.setText("Date is required!");
+            pickDateButton.setBackgroundColor(getColor(R.color.colorRed));
             isAllMandatoryFieldsSet = false;
         }
 
         if (TextUtils.isEmpty(time)){
-            pickTimeButton.setError("Time is required!");
+            pickTimeButton.setText("Time is required!");
+            pickTimeButton.setBackgroundColor(getColor(R.color.colorRed));
             isAllMandatoryFieldsSet = false;
         }
 
