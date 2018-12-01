@@ -68,21 +68,30 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private WorkshopsFirebaseRecyclerAdapter adapter;
     private List<String> citiesList;
 
-    private String mAcceessToken;
+    private String mAccessToken;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
-    @BindView(R.id.workshop_rv) RecyclerView mRecyclerView;
+    @BindView(R.id.workshop_rv)
+    RecyclerView mRecyclerView;
 
-    @BindView(R.id.appBarLayout) AppBarLayout mAppBarLayout;
-    @BindView(R.id.toolBar) Toolbar mToolbar;
-    @BindView(R.id.collapsingBarLayout) CollapsingToolbarLayout mCollapsingToolbarLayout;
+    @BindView(R.id.appBarLayout)
+    AppBarLayout mAppBarLayout;
+    @BindView(R.id.toolBar)
+    Toolbar mToolbar;
+    @BindView(R.id.collapsingBarLayout)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
 
-    @BindView(R.id.progressBar) ProgressBar progressBar;
-    @BindView(R.id.cities_spinner_homePage) Spinner mSpinner;
-    @BindView(R.id.login_bn) Button mLoginButton;
-    @BindView(R.id.signed_header) TextView headerSigned;
-    @BindView(R.id.not_signed_header) RelativeLayout headerNotSigned;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+    @BindView(R.id.cities_spinner_homePage)
+    Spinner mSpinner;
+    @BindView(R.id.login_bn)
+    Button mLoginButton;
+    @BindView(R.id.signed_header)
+    TextView headerSigned;
+    @BindView(R.id.not_signed_header)
+    RelativeLayout headerNotSigned;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,9 +112,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user!=null){
+                if (user != null) {
                     TinyDB tinyDB = new TinyDB(getApplicationContext());
-                    User currentUser = new User(user.getEmail(),  user.getDisplayName(), user.getPhotoUrl().toString()); //Roles will added later
+                    User currentUser = new User(user.getEmail(), user.getDisplayName(), String.valueOf(user.getPhotoUrl())); //Roles will added later
                     tinyDB.putObject(getString(R.string.firebase_user_tinyDb_key), currentUser);
                 }
                 updateUI(user);
@@ -118,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onStart() {
         super.onStart();
-        if (adapter != null){
+        if (adapter != null) {
             adapter.startListening();
         }
         mAuth.addAuthStateListener(mAuthStateListener);
@@ -130,12 +139,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onResume() {
         super.onResume();
         Uri uri = getIntent().getData();
-        if (uri != null && uri.toString().startsWith(REDIRECT_URI)){
-            String code = uri.getQueryParameter("code");
-            String error = uri.getQueryParameter("error");
+        if (uri != null && uri.toString().startsWith(REDIRECT_URI)) {
+            String code = uri.getQueryParameter(getString(R.string.code_query_parameter));
+            String error = uri.getQueryParameter(getString(R.string.error_query_parameter));
             if (code != null) {
                 getAccessToken(code);
             } else if (error != null) {
+                Timber.i(getString(R.string.callback_error_return_message), error);
             }
         }
 
@@ -143,11 +153,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void updateUI(final FirebaseUser user) {
-        if (user!=null) {
+        if (user != null) {
             headerNotSigned.setVisibility(View.GONE);
             headerSigned.setVisibility(View.VISIBLE);
         } else {
-            mLoginButton.setText("Log in");
+            mLoginButton.setText(getString(R.string.login_button_text));
             headerNotSigned.setVisibility(View.VISIBLE);
             headerSigned.setVisibility(View.GONE);
         }
@@ -158,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (user!=null){
+                if (user != null) {
                     signOut();
                 } else {
                     startGitHubLoginIntent();
@@ -191,23 +201,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    private void getAccessToken(String code){
+    private void getAccessToken(String code) {
         GitHubClient client = ServiceGenerator.createService(GitHubClient.class);
         Call<AccessToken> call = client.getAccessToken(CLIENT_ID, CLIENT_SECRET, code);
         call.enqueue(new Callback<AccessToken>() {
             @Override
-            public void onResponse(Call<AccessToken> call, Response<AccessToken> response) {
+            public void onResponse(@NonNull Call<AccessToken> call, @NonNull Response<AccessToken> response) {
                 if (response.body() != null) {
-                    mAcceessToken = response.body().getAccessToken();
-                    //getUserInfo();
-                    authFirebase(mAcceessToken);
+                    mAccessToken = response.body().getAccessToken();
+                    authFirebase(mAccessToken);
                 }
 
             }
 
             @Override
-            public void onFailure(Call<AccessToken> call, Throwable t) {
-                mAcceessToken = null;
+            public void onFailure(@NonNull Call<AccessToken> call, Throwable t) {
+                mAccessToken = null;
             }
         });
     }
@@ -220,9 +229,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (!task.isSuccessful()) {
-                            Timber.i("night authFirebase failed getException is %s", task.getException().toString());
+                            Timber.i(task.getException());
                         } else {
-                            Timber.i("night authFirebase successmAcceessToken is %s", mAcceessToken);
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
 
@@ -250,7 +258,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 citiesList.add(getString(R.string.spinner_cities_all_value));
                 for (DataSnapshot dataSnapshotItem : dataSnapshot.getChildren()) {
                     City city = dataSnapshotItem.getValue(City.class);
-                    String name = city.getName();
+                    String name = null;
+                    if (city != null) {
+                        name = city.getName();
+                    }
                     citiesList.add(name);
                 }
                 spinnerAdapter.notifyDataSetChanged();
@@ -266,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String city = citiesList.get(position);
-        if (city == getString(R.string.spinner_cities_all_value)) {
+        if (city.equals(getString(R.string.spinner_cities_all_value))) {
             loadWorkshopsForCity(getString(R.string.spinner_cities_all_value));
         } else {
             loadWorkshopsForCity(city);
@@ -301,12 +312,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             @NonNull
                             @Override
                             public Workshop parseSnapshot(@NonNull DataSnapshot snapshot) {
-                                GenericTypeIndicator<Workshop> t = new GenericTypeIndicator<Workshop>() {};
+                                GenericTypeIndicator<Workshop> t = new GenericTypeIndicator<Workshop>() {
+                                };
                                 Workshop workshop = snapshot.getValue(t);
                                 return workshop;
                             }
                         })
-                .build();
+                        .build();
         if (adapter != null) {
             adapter.stopListening();
         }
@@ -320,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onStop() {
         super.onStop();
-        if (adapter != null){
+        if (adapter != null) {
             adapter.stopListening();
         }
         mAuth.removeAuthStateListener(mAuthStateListener);
@@ -329,10 +341,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (mAuth.getCurrentUser()!=null){
+        if (mAuth.getCurrentUser() != null) {
             getMenuInflater().inflate(R.menu.main_admin, menu);
-        } else{
-           // getMenuInflater().inflate(R.menu.main_user, menu); no menu for non auth users for now
         }
         return true;
     }
@@ -340,15 +350,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch (id){
-           case R.id.addWorkshop :
-               Intent intent = new Intent(getApplicationContext(), WorkshopDetailsActivity.class);
-               intent.putExtra(getString(R.string.open_workshop_details_intent_key),
-                       WorkshopDetailsActivity.INTENT_OPEN_ADD_WORKSHOP_DETAILS);
-               startActivity(intent);
-            return true;
+        switch (id) {
+            case R.id.addWorkshop:
+                Intent intent = new Intent(getApplicationContext(), WorkshopDetailsActivity.class);
+                intent.putExtra(getString(R.string.open_workshop_details_intent_key),
+                        WorkshopDetailsActivity.INTENT_OPEN_ADD_WORKSHOP_DETAILS);
+                startActivity(intent);
+                return true;
 
-            case R.id.signOutMenu :
+            case R.id.signOutMenu:
                 signOut();
                 return true;
         }

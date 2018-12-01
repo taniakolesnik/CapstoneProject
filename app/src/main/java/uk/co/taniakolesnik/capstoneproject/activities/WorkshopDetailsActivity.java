@@ -36,7 +36,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -99,7 +98,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity
                         .child(getString(R.string.firebase_root_name))
                         .child(getString(R.string.firebase_workshops_root_name))
                         .child(id)
-                        .child("users");
+                        .child(getString(R.string.firebase_user_workshop_user_list));
                 loadWorkshopDetails();
                 loadWorkshopAttendants();
                 setTitle(getString(R.string.workshop_update_title));
@@ -222,8 +221,6 @@ public class WorkshopDetailsActivity extends AppCompatActivity
         String name = Objects.requireNonNull(nameEditText.getText()).toString();
         String description = Objects.requireNonNull(descEditText.getText()).toString();
         String address = Objects.requireNonNull(addressEditText.getText()).toString();
-
-        Map<String, User> users = new HashMap<>();
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference()

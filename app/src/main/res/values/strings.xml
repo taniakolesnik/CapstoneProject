@@ -1,14 +1,6 @@
 <resources>
     <string name="app_name">&lt;codebar&#47;&gt;</string>
 
-    <string name="app_bar_title_donation">How to make our events better.</string>
-
-    <string name="spinner_cities_all_value">All</string>
-
-
-    <string name="open_workshop_details_intent_key">ope_workshop_key</string>
-    <string name="workshop_tinydb_key">workshop_tinydb</string>
-    <string name="current_workshop_id_key">workshop_id_key</string>
 
     <string name="workshop_date_dialog_args_key">workshop_date_args</string>
     <string name="workshop_time_dialog_args_key">workshop_time_args</string>
@@ -19,7 +11,6 @@
     <string name="workshop_description_editText_hint" translatable="true">Description</string>
     <string name="workshop_address_editText_hint" translatable="true">Address</string>
 
-    <string name="add_workshop_menu_text" translatable="true">Add workshop</string>
     <string name="sign_out_menu_text" translatable="true">Sign out</string>
 
     <string name="firebase_root_name" translatable="false">root</string>
@@ -33,8 +24,25 @@
 
     <string name="login_sign_in_message" translatable="true">Or sign into your existing account</string>
     <string name="login_sign_up_message" translatable="true">Do you fall under a under-represented group in coding? You can learn it for free with us! \n (if you are coach, feel free to sign up too)</string>
+
+
     <!-- Main -->
-    <string name="workshops_title">Workshops</string>
+
+    <string name="workshops_title" translatable="true">Workshops</string>
+    <string name="code_query_parameter" translatable="false">code</string>
+    <string name="error_query_parameter" translatable="false">error</string>
+    <string name="login_button_text" translatable="true">Log in</string>
+    <string name="add_workshop_menu_text" translatable="true">Add workshop</string>
+    <string name="open_workshop_details_intent_key">open_workshop_key</string>
+    <string name="workshop_tinydb_key" translatable="false">workshop_tinydb</string>
+    <string name="current_workshop_id_key" translatable="false">workshop_id_key</string>
+    <string name="app_bar_title_donation" translatable="true">How to make our events better.</string>
+    <string name="spinner_cities_all_value" translatable="true">All</string>
+
+
+    <!-- Error messaged -->
+    <string name="callback_error_return_message">REDIRECT_URI returned error</string>
+
 
 </resources>
 
