@@ -8,6 +8,8 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -17,9 +19,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -48,6 +50,7 @@ import uk.co.taniakolesnik.capstoneproject.models.Workshop;
 import uk.co.taniakolesnik.capstoneproject.tools.TinyDB;
 import uk.co.taniakolesnik.capstoneproject.ui_tools.DatePickerFragment;
 import uk.co.taniakolesnik.capstoneproject.ui_tools.TimePickerFragment;
+import uk.co.taniakolesnik.capstoneproject.ui_tools.UserFirebaseRecyclerAdapter;
 
 public class WorkshopDetailsActivity extends AppCompatActivity
         implements TimePickerFragment.TimeListener, DatePickerFragment.DateListener, AdapterView.OnItemSelectedListener {
@@ -69,8 +72,9 @@ public class WorkshopDetailsActivity extends AppCompatActivity
     @BindView(R.id.cities_spinner_wsPage)
     Spinner mSpinner;
     @BindView(R.id.users_list)
-    ListView mListView;
+    RecyclerView mRecyclerView;
 
+    private UserFirebaseRecyclerAdapter adapter;
     private String id;
     private String date;
     private String time;
@@ -78,10 +82,8 @@ public class WorkshopDetailsActivity extends AppCompatActivity
     private ArrayAdapter<String> spinnerAdapter;
     private String city;
     private List<String> citiesList;
-    private ArrayList<String> usersSigned;
     private User currentUser;
     private DatabaseReference databaseReference;
-    private ArrayAdapter<String> itemsAdapter;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -97,6 +99,8 @@ public class WorkshopDetailsActivity extends AppCompatActivity
                         isNew = true;
                         signToWorkshopButton.setVisibility(View.GONE);
                         setTitle(getString(R.string.workshop_add_title));
+                        pickDateButton.setText(getString(R.string.add_city_set_date_button_text));
+                        pickTimeButton.setText(getString(R.string.add_city_set_time_button_text));
                         break;
                     case INTENT_OPEN_UPDATE_WORKSHOP_DETAILS:
                         id = intent.getExtras().getString(getString(R.string.current_workshop_id_key));
@@ -108,10 +112,9 @@ public class WorkshopDetailsActivity extends AppCompatActivity
                                 .child(id)
                                 .child(getString(R.string.firebase_user_workshop_user_list));
                         loadWorkshopDetails();
+                        loadUsers();
+                        checkSignedStatus();
                         setTitle(getString(R.string.workshop_update_title));
-                        usersSigned = new ArrayList<>();
-                        itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, usersSigned);
-                        mListView.setAdapter(itemsAdapter);
                         break;
                 }
             }
@@ -133,8 +136,6 @@ public class WorkshopDetailsActivity extends AppCompatActivity
                 }
             });
 
-            loadWorkshopAttendants();
-
         } catch (NullPointerException e) {
             signToWorkshopButton.setVisibility(View.GONE);
             nameEditText.setFocusable(false);
@@ -146,6 +147,22 @@ public class WorkshopDetailsActivity extends AppCompatActivity
 
         getCitiesSpinnerList();
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (adapter != null) {
+            adapter.startListening();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (adapter != null) {
+            adapter.stopListening();
+        }
     }
 
     @Override
@@ -278,44 +295,35 @@ public class WorkshopDetailsActivity extends AppCompatActivity
 
     }
 
-    private void loadWorkshopAttendants() {
+    private void loadUsers() {
+            Query query = databaseReference.orderByChild(getString(R.string.firebase_email_order_by));
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    usersSigned.clear();
-                    for (DataSnapshot dataSnapshotItem : dataSnapshot.getChildren()) {
-                        User user = dataSnapshotItem.getValue(User.class);
-                        usersSigned.add(user.getDisplayName() + ", (" + user.getEmail() + ")");
-                        if (user.getEmail().equals(currentUser.getEmail())) {
-                            updateUI(true);
-                        }
-                    }
-                    itemsAdapter.notifyDataSetChanged();
-                }
-
+            FirebaseRecyclerOptions<User> options =
+                    new FirebaseRecyclerOptions.Builder<User>()
+                            .setQuery(query, User.class)
+                            .build();
+            if (adapter != null) {
+                adapter.stopListening();
             }
+            adapter = new UserFirebaseRecyclerAdapter(options, this);
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            mRecyclerView.setAdapter(adapter);
+            adapter.startListening();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
+        }
 
     private boolean checkMandatoryFieldsSet() {
         boolean isAllMandatoryFieldsSet = true;
 
         if (TextUtils.isEmpty(date)) {
             pickDateButton.setText(getString(R.string.date_not_set_message));
-            pickDateButton.setBackgroundColor(getColor(R.color.colorRed));
+            pickDateButton.setBackground(getDrawable(R.drawable.button_shape_pressed));
             isAllMandatoryFieldsSet = false;
         }
 
         if (TextUtils.isEmpty(time)) {
             pickTimeButton.setText(getString(R.string.time_not_set_message));
-            pickTimeButton.setBackgroundColor(getColor(R.color.colorRed));
+            pickTimeButton.setBackground(getDrawable(R.drawable.button_shape_pressed));
             isAllMandatoryFieldsSet = false;
         }
 
@@ -336,6 +344,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity
         databaseReference.push().setValue(currentUser).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                checkSignedStatus();
                 if (!task.isSuccessful()) {
                     Timber.i(task.getException());
                 }
@@ -355,6 +364,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity
                         for (DataSnapshot dataSnapshotItem : dataSnapshot.getChildren()) {
                             dataSnapshotItem.getRef().removeValue();
                         }
+                        checkSignedStatus();
                     }
 
                     @Override
@@ -362,6 +372,36 @@ public class WorkshopDetailsActivity extends AppCompatActivity
 
                     }
                 });
+    }
+
+    private void checkSignedStatus() {
+        TinyDB tinyDB = new TinyDB(this);
+        try {
+            currentUser = tinyDB.getObject(getString(R.string.firebase_user_tinyDb_key), User.class);
+
+        } catch (NullPointerException e){
+            signToWorkshopButton.setVisibility(View.GONE);
+            Timber.i(e);
+        }
+
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    for (DataSnapshot dataSnapshotItem : dataSnapshot.getChildren()){
+                        User user = dataSnapshotItem.getValue(User.class);
+                        if (user.getEmail().equals(currentUser.getEmail())){
+                            updateUI(true);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void loadAddNewCityDialogue() {

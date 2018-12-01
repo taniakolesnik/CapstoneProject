@@ -6,10 +6,10 @@
     <string name="workshop_time_dialog_args_key">workshop_time_args</string>
 
     <string name="workshop_update_title" translatable="true"><Workshop></Workshop></string>
-    <string name="workshop_add_title" translatable="true">Add Workshop</string>
-    <string name="workshop_name_editText_hint" translatable="true">Name</string>
-    <string name="workshop_description_editText_hint" translatable="true">Description</string>
-    <string name="workshop_address_editText_hint" translatable="true">Address</string>
+    <string name="workshop_add_title" translatable="true">add workshop</string>
+    <string name="workshop_name_editText_hint" translatable="true">name</string>
+    <string name="workshop_description_editText_hint" translatable="true">description</string>
+    <string name="workshop_address_editText_hint" translatable="true">address</string>
 
     <string name="sign_out_menu_text" translatable="true">Sign out</string>
     <string name="sign_out_workshop_text" translatable="true">Sign out</string>
@@ -48,6 +48,8 @@
     <string name="spinner_add_city_value" translatable="true">add new city</string>
     <string name="add_city_error_empty" translatable="true">Cannot be empty</string>
     <string name="add_city_error_already_exists" translatable="true">Already exists</string>
+    <string name="add_city_set_date_button_text" translatable="true">Set date</string>
+    <string name="add_city_set_time_button_text" translatable="true">Set time</string>
 
 
     <!-- Error messaged -->
