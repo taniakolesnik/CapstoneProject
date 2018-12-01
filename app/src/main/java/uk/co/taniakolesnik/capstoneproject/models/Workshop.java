@@ -29,6 +29,15 @@ public class Workshop implements Serializable {
         this.users = users;
     }
 
+    public Workshop(String date, String time, String description, String name, String address, String city) {
+        this.date = date;
+        this.time = time;
+        this.description = description;
+        this.name = name;
+        this.address = address;
+        this.city = city;
+    }
+
     public void setValue(Map<String, User> map)
     {
         this.users = map;

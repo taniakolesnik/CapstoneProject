@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -61,6 +62,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity
     @BindView(R.id.ws_name_et) TextInputEditText nameEditText;
     @BindView(R.id.ws_address_et) TextInputEditText addressEditText;
     @BindView(R.id.cities_spinner_wsPage) Spinner mSpinner;
+    @BindView(R.id.users_list) ListView mListView;
 
     private String id;
     private String date;
@@ -70,9 +72,10 @@ public class WorkshopDetailsActivity extends AppCompatActivity
     private Workshop mWorkshop;
     private String city;
     private List<String> citiesList;
-    private HashMap<String, User> users;
-    private User user;
+    private ArrayList<String> usersSigned;
+    private User currentUser;
     private DatabaseReference databaseReference;
+    private ArrayAdapter<String> itemsAdapter ;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -90,22 +93,26 @@ public class WorkshopDetailsActivity extends AppCompatActivity
                 break;
             case INTENT_OPEN_UPDATE_WORKSHOP_DETAILS:
                 id = intent.getExtras().getString(getString(R.string.current_workshop_id_key));
-                loadExistentWorkshopDetails();
-                checkIfWorkshopAttendanceStateForCurrentUser();
+                updateUI(false);
                 FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                 databaseReference = firebaseDatabase.getReference()
                         .child(getString(R.string.firebase_root_name))
                         .child(getString(R.string.firebase_workshops_root_name))
                         .child(id)
                         .child("users");
-
+                loadWorkshopDetails();
+                loadWorkshopAttendants();
                 setTitle(getString(R.string.workshop_update_title));
                 break;
         }
 
+        usersSigned = new ArrayList<>();
+
+        itemsAdapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, usersSigned);
+        mListView.setAdapter(itemsAdapter);
 
         getCitiesSpinnerList();
-        users = new HashMap<>();
 
     }
 
@@ -134,52 +141,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-
-    private void checkIfWorkshopAttendanceStateForCurrentUser() {
-
-        TinyDB tinyDB = new TinyDB(this);
-
-        try {
-            user = tinyDB.getObject(getString(R.string.firebase_user_tinyDb_key), User.class);
-        } catch (NullPointerException e){
-            signToWorkshopButton.setVisibility(View.GONE);
-            Timber.i(e);
-        }
-
-        if (user!=null){
-            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            DatabaseReference databaseReference = firebaseDatabase.getReference()
-                    .child(getString(R.string.firebase_root_name))
-                    .child(getString(R.string.firebase_workshops_root_name))
-                    .child(id)
-                    .child("users");
-
-            Query query = databaseReference.orderByChild("email");
-            query.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    updateUI(false);
-                    for (DataSnapshot dataSnapshotItem : dataSnapshot.getChildren()) {
-                        String userEmail = (String) dataSnapshotItem.child("email").getValue();
-                        Integer userRole = dataSnapshotItem.child("role").getValue(Integer.class);
-                        User workshopAttendant = new User(userEmail, userRole);
-                        if (workshopAttendant.getEmail().equals(user.getEmail())){
-                            updateUI(true);
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Timber.i(databaseError.toException(), "checkIfWorkshopAttendanceStateForCurrentUser failed");
-                }
-            });
-        }
-
-
-    }
-
-    private void loadExistentWorkshopDetails() {
+    private void loadWorkshopDetails() {
         TinyDB tinydb = new TinyDB(this);
         mWorkshop = tinydb.getObject(getString(R.string.workshop_tinydb_key), Workshop.class);
         String description = mWorkshop.getDescription();
@@ -196,6 +158,9 @@ public class WorkshopDetailsActivity extends AppCompatActivity
         pickTimeButton.setText(time);
 
     }
+
+
+
     private void updateUI(final boolean isSigned){
         if (isSigned){
             signToWorkshopButton.setText("Sign Out");
@@ -207,8 +172,10 @@ public class WorkshopDetailsActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 if (isSigned){
+                    Timber.i("Saturday setOnClickListener isSigned");
                     signOutFromWorkshop();
                 } else {
+                    Timber.i("Saturday setOnClickListener NOT isSigned");
                     signInForWorkshop();
                 }
             }
@@ -256,31 +223,64 @@ public class WorkshopDetailsActivity extends AppCompatActivity
         String description = Objects.requireNonNull(descEditText.getText()).toString();
         String address = Objects.requireNonNull(addressEditText.getText()).toString();
 
-//        if (isNew) {
-//            users = new ArrayList<>();
-//            users.add(user);
-//        } else {
-//            //TODO load current list
-//        }
+        Map<String, User> users = new HashMap<>();
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference()
                 .child(getString(R.string.firebase_root_name))
                 .child(getString(R.string.firebase_workshops_root_name));
 
-
-        Map<String, User> users = new HashMap<>();
-
         if (checkMandatoryFieldsSet()){
-            Workshop updatedOrNewWorkshop = new Workshop(date, time, description, name, address, city, users);
+            Workshop workshop = new Workshop(date, time, description, name, address, city);
             if (isNew) {
-                databaseReference.push().setValue(updatedOrNewWorkshop);
+                databaseReference.push().setValue(workshop);
             } else {
-                databaseReference.child(id).setValue(updatedOrNewWorkshop);
+                HashMap<String, Object> map = new HashMap<>();
+                map.put("address", address);
+                map.put("date", date);
+                map.put("time", time);
+                map.put("description", description);
+                map.put("name", name);
+                map.put("city", city);
+                databaseReference.child(id).updateChildren(map);
             }
             finish();
         }
 
+    }
+
+    private void loadWorkshopAttendants() {
+        TinyDB tinyDB = new TinyDB(this);
+        try {
+            currentUser = tinyDB.getObject(getString(R.string.firebase_user_tinyDb_key), User.class);
+
+        } catch (NullPointerException e){
+            signToWorkshopButton.setVisibility(View.GONE);
+            Timber.i(e);
+        }
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    usersSigned.clear();
+                    for (DataSnapshot dataSnapshotItem : dataSnapshot.getChildren()){
+                        User user = dataSnapshotItem.getValue(User.class);
+                        usersSigned.add(user.getDisplayName() + ", (" + user.getEmail() + ")");
+                        if (user.getEmail().equals(currentUser.getEmail())){
+                            updateUI(true);
+                        }
+                    }
+                    itemsAdapter.notifyDataSetChanged();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private boolean checkMandatoryFieldsSet(){
@@ -312,11 +312,12 @@ public class WorkshopDetailsActivity extends AppCompatActivity
     }
 
     public void signInForWorkshop() {
-        databaseReference.push().setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+        Timber.i("Saturday signInForWorkshop started");
+        databaseReference.push().setValue(currentUser).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (!task.isSuccessful()){
-                    Timber.i(task.getException(), "signInForWorkshop failed ");
+                    Timber.i(task.getException(),  "Saturday signInForWorkshop failed");
                 }
             }
         });
@@ -325,15 +326,16 @@ public class WorkshopDetailsActivity extends AppCompatActivity
 
 
     public void signOutFromWorkshop() {
+        Timber.i("Saturday signOutFromWorkshop started");
         databaseReference.orderByChild("email")
-                .equalTo(user.getEmail())
+                .equalTo(currentUser.getEmail())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        updateUI(false);
                         for (DataSnapshot dataSnapshotItem : dataSnapshot.getChildren()) {
                             dataSnapshotItem.getRef().removeValue();
                         }
-
                     }
 
                     @Override
@@ -354,7 +356,6 @@ public class WorkshopDetailsActivity extends AppCompatActivity
         builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // we will catch input on getButton later ro ensure we don't save something we dont want to save
             }
         });
 

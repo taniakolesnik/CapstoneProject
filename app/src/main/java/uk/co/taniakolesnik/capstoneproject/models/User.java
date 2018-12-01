@@ -3,11 +3,14 @@ package uk.co.taniakolesnik.capstoneproject.models;
 public class User {
 
     private String email;
-    private int role; // 1 - coach ; 0 - organiser ; 2 - student
+//    private int role; // 1 - coach ; 0 - organiser ; 2 - student
+    private String displayName ;
+    private String photoUrl;
 
-    public User(String userEmail, int role) {
+    public User(String userEmail, String displayName, String photoUrl) {
         this.email = userEmail;
-        this.role = role;
+        this.displayName = displayName;
+        this.photoUrl = photoUrl;
     }
 
     // for firebase
@@ -19,22 +22,47 @@ public class User {
     }
 
     public void setEmail(String email) {
+        if (email==null){
+            email = "not provided";
+        }
         this.email = email;
     }
 
-    public int getRole() {
-        return role;
+    public String getDisplayName() {
+        if (displayName == null){
+            displayName = "not provided";
+        }
+        return displayName;
     }
 
-    public void setRole(int role) {
-        this.role = role;
+    public void setDisplayName(String name) {
+        if (name == null){
+            name = "not provided";
+        }
+        this.displayName = name;
     }
+
+    public String getPhotoUrl() {
+        if (photoUrl == null){
+            photoUrl = "not provided";
+        }
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        if (photoUrl == null){
+            photoUrl = "not provided";
+        }
+        this.photoUrl = photoUrl;
+    }
+
 
     @Override
     public String toString() {
         return "User{" +
                 "email='" + email + '\'' +
-                ", role=" + role +
+                "displayName='" + displayName + '\'' +
+                "photoUrl='" + photoUrl + '\'' +
                 '}';
     }
 }

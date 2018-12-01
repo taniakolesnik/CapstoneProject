@@ -108,4 +108,9 @@
         android:background="@color/colorRed"
         android:text="Singn in" />
 
+    <ListView
+        android:id="@+id/users_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
 </LinearLayout>

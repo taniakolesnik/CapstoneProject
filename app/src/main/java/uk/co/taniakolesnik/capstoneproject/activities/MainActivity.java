@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user!=null){
                     TinyDB tinyDB = new TinyDB(getApplicationContext());
-                    User currentUser = new User(user.getEmail(), 1); //Roles will added later
+                    User currentUser = new User(user.getEmail(),  user.getDisplayName(), user.getPhotoUrl().toString()); //Roles will added later
                     tinyDB.putObject(getString(R.string.firebase_user_tinyDb_key), currentUser);
                 }
                 updateUI(user);
@@ -230,36 +230,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                 });
     }
-//
-//
-//    private void getUserInfo() {
-//        if (mAcceessToken!=null){
-//            GitHubClient client = ServiceGenerator.createApiService(GitHubClient.class);
-//            Call<GitHubUser> call = client.getUserInfo("Bearer " + mAcceessToken);
-//            call.enqueue(new Callback<GitHubUser>() {
-//                @Override
-//                public void onResponse(Call<GitHubUser> call, Response<GitHubUser> response) {
-//                    GitHubUser user = response.body();
-//                    String email = user.getEmail();
-//                    String login = user.getLogin();
-//                    String avatarUrl = user.getAvatarUrl();
-//                    String userName = user.getUserName();
-//                    Toast.makeText(getApplicationContext(), email
-//                                    + "\n"
-//                                    + login
-//                                    + "\n"
-//                                    + avatarUrl
-//                                    + "\n"
-//                                    + userName,
-//                            Toast.LENGTH_LONG).show();
-//                }
-//
-//                @Override
-//                public void onFailure(Call<GitHubUser> call, Throwable t) {
-//                }
-//            });
-//        }
-//    }
 
     private void getCitiesSpinnerList() {
         citiesList = new ArrayList<>();
