@@ -17,9 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -56,16 +54,13 @@ public class WorkshopDetailsActivity extends AppCompatActivity
 
     public static final String INTENT_OPEN_ADD_WORKSHOP_DETAILS = "add_workshop";
     public static final String INTENT_OPEN_UPDATE_WORKSHOP_DETAILS = "update_workshop";
-    @BindView(R.id.ws_pick_date_bn) ImageButton pickDateButton;
-    @BindView(R.id.workshop_date_tv) TextView dateTextView;
-    @BindView(R.id.ws_pick_time_bn) ImageButton pickTimeButton;
-    @BindView(R.id.workshop_time_tv) TextView timeTextView;
+    @BindView(R.id.ws_pick_date_bn) Button pickDateButton;
+    @BindView(R.id.ws_pick_time_bn) Button pickTimeButton;
     @BindView(R.id.sing_in_or_out_ws_from_user) Button signToWorkshopButton;
     @BindView(R.id.ws_description_et) TextInputEditText descEditText;
     @BindView(R.id.ws_name_et) TextInputEditText nameEditText;
     @BindView(R.id.ws_address_et) TextInputEditText addressEditText;
     @BindView(R.id.cities_spinner_wsPage) Spinner mSpinner;
-    @BindView(R.id.add_city_bt) Button mAddCityButton;
 
     private String id;
     private String date;
@@ -111,13 +106,6 @@ public class WorkshopDetailsActivity extends AppCompatActivity
 
         getCitiesSpinnerList();
         users = new HashMap<>();
-
-        mAddCityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadAddNewCityDialogue();
-            }
-        });
 
     }
 
@@ -204,8 +192,8 @@ public class WorkshopDetailsActivity extends AppCompatActivity
         descEditText.setText(description);
         nameEditText.setText(name);
         addressEditText.setText(address);
-        dateTextView.setText(getUserFriendlyDate(date));
-        timeTextView.setText(time);
+        pickDateButton.setText(getUserFriendlyDate(date));
+        pickTimeButton.setText(time);
 
     }
     private void updateUI(final boolean isSigned){
@@ -251,6 +239,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity
                     int spinnerPosition = spinnerAdapter.getPosition(city);
                     mSpinner.setSelection(spinnerPosition);
                 }
+                citiesList.add("add new city");
                 spinnerAdapter.notifyDataSetChanged();
             }
 
@@ -297,13 +286,13 @@ public class WorkshopDetailsActivity extends AppCompatActivity
     private boolean checkMandatoryFieldsSet(){
         boolean isAllMandatoryFieldsSet = true;
 
-        if (TextUtils.isEmpty(dateTextView.getText())) {
-            dateTextView.setError("Date is required!");
+        if (TextUtils.isEmpty(date)) {
+            pickDateButton.setError("Date is required!");
             isAllMandatoryFieldsSet = false;
         }
 
-        if (TextUtils.isEmpty(timeTextView.getText())){
-            timeTextView.setError("Time is required!");
+        if (TextUtils.isEmpty(time)){
+            pickTimeButton.setError("Time is required!");
             isAllMandatoryFieldsSet = false;
         }
 
@@ -353,7 +342,6 @@ public class WorkshopDetailsActivity extends AppCompatActivity
     }
 
     private void loadAddNewCityDialogue() {
-        Timber.i("night loadAddNewCityDialogue started");
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Add new city");
         final EditText input = new EditText(this);
@@ -383,13 +371,10 @@ public class WorkshopDetailsActivity extends AppCompatActivity
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Timber.i("night getButton onClick started");
                         String newCity = input.getText().toString();
                         if (TextUtils.isEmpty(newCity)){
-                            Timber.i("night getButton City cannot be empty");
                             dialog.setTitle("City cannot be empty");
                         } else if (citiesList.contains(newCity)){
-                            Timber.i("night getButton City is already added");
                             dialog.setTitle("City is already added");
                         }
                         else {
@@ -440,14 +425,14 @@ public class WorkshopDetailsActivity extends AppCompatActivity
     @Override
     public void setDate(int year, int month, int day) {
         date = day + "-" + month + "-" + year;
-        dateTextView.setText(getUserFriendlyDate(date));
+        pickDateButton.setText(getUserFriendlyDate(date));
     }
 
 
     @Override
     public void setTime(int hourOfDay, int minute) {
         time = String.format("%02d:%02d", hourOfDay, minute);
-        timeTextView.setText(time);
+        pickTimeButton.setText(time);
     }
 
     private String getUserFriendlyDate(String dateOld) {
@@ -464,7 +449,12 @@ public class WorkshopDetailsActivity extends AppCompatActivity
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        city = citiesList.get(position);
+        if (citiesList.get(position).equals("add new city")){
+            loadAddNewCityDialogue();
+        } else {
+            city = citiesList.get(position);
+        }
+
     }
 
     @Override

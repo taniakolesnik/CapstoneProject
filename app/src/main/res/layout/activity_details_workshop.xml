@@ -63,52 +63,35 @@
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal" />
 
-    <Button
-        android:id="@+id/add_city_bt"
-        android:layout_width="0dp"
-        android:layout_weight="2"
-        android:layout_height="wrap_content"
-        android:text="Add city"/>
-
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
 
-        <TextView
-            android:id="@+id/workshop_date_tv"
-            android:layout_weight="4"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
-
-        <ImageButton
-            android:src="@drawable/pickdate"
+        <Button
+            android:textColor="@color/colorWhite"
             android:id="@+id/ws_pick_date_bn"
-            style="@style/ButtonStyle"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:layout_width="0dp"
+            android:background="@color/colorRed"
+            android:layout_height="wrap_content"
             android:onClick="showDatePickerDialog" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/workshop_time_tv"
-            android:layout_weight="4"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
-
-        <ImageButton
-            android:src="@drawable/pickuptime"
-            android:id="@+id/ws_pick_time_bn"
-            style="@style/ButtonStyle"
+        <View
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:onClick="showTimePickerDialog" />
+            android:layout_height="2dp"/>
+
+        <Button
+            android:textColor="@color/colorWhite"
+            android:id="@+id/ws_pick_time_bn"
+            android:layout_weight="2"
+            android:background="@color/colorRed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="showTimePickerDialog"/>
 
     </LinearLayout>
 
