@@ -40,7 +40,6 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
 
         try {
             loggedUser = tinyDB.getObject(mContext.getString(R.string.firebase_user_tinyDb_key), User.class);
-            Timber.i("Thursday user from tinydb is %s", loggedUser.getEmail());
         } catch (NullPointerException e){
             Timber.i(e);
         }
@@ -57,7 +56,6 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
     @Override
     protected void onBindViewHolder(@NonNull final WorkshopViewHolder holder, final int position, @NonNull final Workshop model) {
 
-        Timber.i("Wednesday Adapter onBindViewHolder started");
         final Workshop workshop = getItem(position);
         final String id = getRef(position).getKey();
 

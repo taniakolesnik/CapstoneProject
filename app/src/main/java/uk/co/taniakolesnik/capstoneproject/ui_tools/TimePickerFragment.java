@@ -13,7 +13,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.util.Calendar;
 
-import timber.log.Timber;
 import uk.co.taniakolesnik.capstoneproject.R;
 
 public class TimePickerFragment extends DialogFragment
@@ -38,7 +37,6 @@ public class TimePickerFragment extends DialogFragment
             if (getArguments().containsKey(getString(R.string.workshop_time_dialog_args_key))) {
                 // Use saved view_date_month as the default view_date_month in the picker
                 String timeString = getArguments().getString(getString(R.string.workshop_time_dialog_args_key));
-                Timber.i("timeString is %s",timeString);
                 try {
                     LocalTime localTime = LocalTime.parse(timeString, DateTimeFormatter.ofPattern("HH:mm"));
                     hour = localTime.get(ChronoField.CLOCK_HOUR_OF_DAY);
