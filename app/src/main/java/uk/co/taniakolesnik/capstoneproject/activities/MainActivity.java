@@ -67,21 +67,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private WorkshopsFirebaseRecyclerAdapter adapter;
     private List<String> citiesList;
-
     private String mAccessToken;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @BindView(R.id.workshop_rv)
     RecyclerView mRecyclerView;
-
     @BindView(R.id.appBarLayout)
     AppBarLayout mAppBarLayout;
     @BindView(R.id.toolBar)
     Toolbar mToolbar;
     @BindView(R.id.collapsingBarLayout)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
-
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
     @BindView(R.id.cities_spinner_homePage)
@@ -163,7 +160,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         mCollapsingToolbarLayout.requestLayout();
-
         invalidateOptionsMenu();
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,6 +171,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             }
         });
+
+        loadWorkshopsForCity(citiesList.get(0)); // default
 
     }
 
@@ -233,7 +231,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         } else {
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
-
                         }
                     }
                 });

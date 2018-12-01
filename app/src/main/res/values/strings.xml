@@ -5,7 +5,7 @@
     <string name="workshop_date_dialog_args_key">workshop_date_args</string>
     <string name="workshop_time_dialog_args_key">workshop_time_args</string>
 
-    <string name="workshop_update_title" translatable="true">Update Workshop</string>
+    <string name="workshop_update_title" translatable="true"><Workshop></Workshop></string>
     <string name="workshop_add_title" translatable="true">Add Workshop</string>
     <string name="workshop_name_editText_hint" translatable="true">Name</string>
     <string name="workshop_description_editText_hint" translatable="true">Description</string>

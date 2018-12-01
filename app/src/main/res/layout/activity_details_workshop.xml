@@ -77,9 +77,7 @@
             android:layout_width="0dp"
             android:background="@color/colorAccent"
             android:layout_height="wrap_content"
-            android:onClick="showDatePickerDialog"
-            android:fontFamily="sans-serif"
-            android:text="date"/>
+            android:fontFamily="sans-serif" />
 
         <View
             android:layout_weight="1"
@@ -93,9 +91,7 @@
             android:background="@color/colorAccent"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:onClick="showTimePickerDialog"
-            android:fontFamily="sans-serif"
-            android:text="time"/>
+            android:fontFamily="sans-serif"/>
 
     </LinearLayout>
 

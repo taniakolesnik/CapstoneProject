@@ -108,7 +108,6 @@ public class WorkshopDetailsActivity extends AppCompatActivity
                                 .child(id)
                                 .child(getString(R.string.firebase_user_workshop_user_list));
                         loadWorkshopDetails();
-                        loadWorkshopAttendants();
                         setTitle(getString(R.string.workshop_update_title));
                         usersSigned = new ArrayList<>();
                         itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, usersSigned);
@@ -116,6 +115,34 @@ public class WorkshopDetailsActivity extends AppCompatActivity
                         break;
                 }
             }
+
+        TinyDB tinyDB = new TinyDB(this);
+        try {
+            currentUser = tinyDB.getObject(getString(R.string.firebase_user_tinyDb_key), User.class);
+            pickDateButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDatePickerDialog();
+                }
+            });
+
+            pickTimeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showTimePickerDialog();
+                }
+            });
+
+            loadWorkshopAttendants();
+
+        } catch (NullPointerException e) {
+            signToWorkshopButton.setVisibility(View.GONE);
+            nameEditText.setFocusable(false);
+            descEditText.setFocusable(false);
+            addressEditText.setFocusable(false);
+            Timber.i(e);
+        }
+
 
         getCitiesSpinnerList();
 
@@ -128,7 +155,9 @@ public class WorkshopDetailsActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.workshop, menu);
+        if (currentUser!=null){
+            getMenuInflater().inflate(R.menu.workshop, menu);
+        }
         return true;
     }
 
@@ -250,14 +279,6 @@ public class WorkshopDetailsActivity extends AppCompatActivity
     }
 
     private void loadWorkshopAttendants() {
-        TinyDB tinyDB = new TinyDB(this);
-        try {
-            currentUser = tinyDB.getObject(getString(R.string.firebase_user_tinyDb_key), User.class);
-
-        } catch (NullPointerException e) {
-            signToWorkshopButton.setVisibility(View.GONE);
-            Timber.i(e);
-        }
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -398,7 +419,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity
         }
     }
 
-    public void showDatePickerDialog(View v) {
+    public void showDatePickerDialog() {
         DialogFragment dialogFragment = new DatePickerFragment();
         if (!isNew) {
             Bundle bundle = new Bundle();
@@ -409,7 +430,7 @@ public class WorkshopDetailsActivity extends AppCompatActivity
         ((DatePickerFragment) dialogFragment).setListener(this);
     }
 
-    public void showTimePickerDialog(View v) {
+    public void showTimePickerDialog() {
         DialogFragment dialogFragment = new TimePickerFragment();
         if (!isNew) {
             Bundle bundle = new Bundle();
