@@ -89,7 +89,7 @@ public class Workshop implements Serializable {
     @Override
     public String toString() {
         return "Workshop{" +
-                "date='" + date + '\'' +
+                "date_month_view='" + date + '\'' +
                 ", time='" + time + '\'' +
                 ", description='" + description + '\'' +
                 ", name='" + name + '\'' +
