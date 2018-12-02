@@ -13,9 +13,4 @@
         app:showAsAction="always"
         android:icon="@drawable/cancel" />
 
-    <item
-        android:id="@+id/delete_ws"
-        android:title="Delete"
-        app:showAsAction="never" />
-
 </menu>

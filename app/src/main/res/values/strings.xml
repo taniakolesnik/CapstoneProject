@@ -40,7 +40,7 @@
     <string name="open_workshop_details_intent_key">open_workshop_key</string>
     <string name="workshop_tinydb_key" translatable="false">workshop_tinydb</string>
     <string name="current_workshop_id_key" translatable="false">workshop_id_key</string>
-    <string name="app_bar_title_donation" translatable="true">How to make our events better.</string>
+    <string name="app_bar_title_donation" translatable="true">You are never too old to set another goal or to dream a new dream. - C.S. Lewis</string>
     <string name="spinner_cities_all_value" translatable="true">All</string>
 
     <!-- Workshop details activity-->

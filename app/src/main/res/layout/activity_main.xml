@@ -47,23 +47,24 @@
 
                     <TextView
                         android:id="@+id/login_text"
+                        android:textAlignment="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/login_sign_up_message"
-                        android:layout_marginTop="36dp"
-                        android:layout_marginStart="36dp"
-                        android:layout_marginEnd="36dp">
+                        android:layout_marginTop="@dimen/margin_medium"
+                        android:layout_marginStart="@dimen/margin_medium"
+                        android:layout_marginEnd="@dimen/margin_medium">
                     </TextView>
 
                     <Button
                         android:id="@+id/login_bn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:background="@color/colorPrimary"
-                        android:textColor="@color/colorPrimaryDark"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:background="@drawable/button_selector"
+                        android:textColor="@color/colorWhite"
                         android:layout_below="@id/login_text"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="@dimen/margin_small"
                         android:layout_centerInParent="true" />
 
                     <TextView
@@ -71,10 +72,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/login_bn"
+                        android:textAlignment="center"
                         android:text="@string/login_sign_in_message"
-                        android:layout_marginStart="36dp"
-                        android:layout_marginEnd="36dp"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginStart="@dimen/margin_medium"
+                        android:layout_marginEnd="@dimen/margin_medium"
+                        android:layout_marginBottom="@dimen/margin_small">
                     </TextView>
 
                 </RelativeLayout>
@@ -104,8 +106,6 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -113,6 +113,7 @@
                     android:text="@string/workshops_title"
                     android:layout_margin="@dimen/margin_small"
                     android:textSize="20sp"
+                    android:textAlignment="center"
                     android:textColor="@color/colorRed"
                     android:fontFamily="sans-serif"/>
 
@@ -120,8 +121,9 @@
                     android:id="@+id/cities_spinner_homePage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginEnd="@dimen/margin_small"
                     android:layout_gravity="center_horizontal"
-                    android:layout_margin="@dimen/margin_small"
                     android:background="@drawable/spinner_background"/>
 
 
@@ -133,9 +135,9 @@
                         android:id="@+id/workshop_rv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp">
+                        android:layout_marginStart="@dimen/margin_small"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:layout_marginEnd="@dimen/margin_small">
 
                     </android.support.v7.widget.RecyclerView>
 
@@ -143,8 +145,8 @@
                         android:id="@+id/progressBar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:layout_marginBottom="@dimen/margin_small"
                         android:layout_centerInParent="true" />
 
                 </RelativeLayout>
