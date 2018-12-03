@@ -1,9 +1,12 @@
 package uk.co.taniakolesnik.capstoneproject.models;
 
+import android.support.annotation.Keep;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+@Keep
 public class Workshop implements Serializable {
 
     private String date;

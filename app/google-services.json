@@ -15,7 +15,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "1044586602658-bf99nqqj5cojhhio64hl3h3do3geqku5.apps.googleusercontent.com",
+          "client_id": "1044586602658-ghq42sp03vl90jt9i8teqg52tjuhecio.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "uk.co.taniakolesnik.capstoneproject",
+            "certificate_hash": "feae1bda866b41cb17153eb235a2ecf41e4aa7c2"
+          }
+        },
+        {
+          "client_id": "1044586602658-an8mtu72fgpi484u7h5u7qukii1sqpic.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "uk.co.taniakolesnik.capstoneproject",

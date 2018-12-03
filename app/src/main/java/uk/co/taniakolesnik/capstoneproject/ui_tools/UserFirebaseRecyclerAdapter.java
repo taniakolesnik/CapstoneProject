@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -17,7 +16,6 @@ import uk.co.taniakolesnik.capstoneproject.models.User;
 public class UserFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<User, UserViewHolder> {
 
     private Context mContext;
-    private ProgressBar progressBar;
 
     public UserFirebaseRecyclerAdapter(FirebaseRecyclerOptions<User> options, Context context) {
         super(options);

@@ -1,9 +1,11 @@
 package uk.co.taniakolesnik.capstoneproject.models;
 
+import android.support.annotation.Keep;
+
+@Keep
 public class User {
 
     private String email;
-//    private int role; // 1 - coach ; 0 - organiser ; 2 - student
     private String displayName ;
     private String photoUrl;
 

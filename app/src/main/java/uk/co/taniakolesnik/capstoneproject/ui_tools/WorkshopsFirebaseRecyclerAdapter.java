@@ -68,7 +68,7 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
         try {
             Map<String, User> users = workshop.getValue();
             for (User user : users.values()) {
-               if (user.getEmail().equals(loggedUser.getEmail())){
+                if (user.getEmail().equals(loggedUser.getEmail())){
                    holder.attendingBox.setBackgroundColor(mContext.getColor(R.color.colorWhite));
                    holder.attendingBox.setBackground(mContext.getDrawable(R.drawable.attendance_status_shape_white));
                    holder.attendingImage.setVisibility(View.VISIBLE);

@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'key0'
+            keyPassword 'udacity'
+            storeFile file('/Users/tetianakolesnik/AndroidStudioProjects/CapstoneProject/app/capstoneproject')
+            storePassword 'udacity'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "uk.co.taniakolesnik.capstoneproject"
@@ -10,13 +18,26 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+        signingConfig signingConfigs.config
     }
     buildTypes {
         release {
-            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
+    productFlavors {
+    }
+
+    signingConfigs {
+        config {
+            keyAlias 'key0'
+            keyPassword 'udacity'
+            storeFile file("capstoneproject")
+            storePassword 'udacity'
+        }
+    }
+
 }
 
 dependencies {
@@ -49,3 +70,4 @@ dependencies {
 }
 
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.android.application'

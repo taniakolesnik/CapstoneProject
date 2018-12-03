@@ -64,6 +64,7 @@
     <string name="address_not_set_message">Address is mandatory.</string>
     <string name="save_workshop_menu_item">Save</string>
     <string name="cancel_workshop_menu_item">Cancel</string>
+    <string name="info_activity_title">GitHub Info</string>
 
 </resources>
 

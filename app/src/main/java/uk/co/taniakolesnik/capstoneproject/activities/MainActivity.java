@@ -55,7 +55,6 @@ import uk.co.taniakolesnik.capstoneproject.auth.ServiceGenerator;
 import uk.co.taniakolesnik.capstoneproject.models.City;
 import uk.co.taniakolesnik.capstoneproject.models.User;
 import uk.co.taniakolesnik.capstoneproject.models.Workshop;
-import uk.co.taniakolesnik.capstoneproject.tools.ReleaseTree;
 import uk.co.taniakolesnik.capstoneproject.tools.TinyDB;
 import uk.co.taniakolesnik.capstoneproject.ui_tools.WorkshopsFirebaseRecyclerAdapter;
 
@@ -99,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         } else {
-            Timber.plant(new ReleaseTree());
+            Timber.plant(new Timber.DebugTree());
         }
 
         mAuth = FirebaseAuth.getInstance();
@@ -206,8 +205,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onResponse(@NonNull Call<AccessToken> call, @NonNull Response<AccessToken> response) {
                 if (response.body() != null) {
                     mAccessToken = response.body().getAccessToken();
-                    TinyDB tinyDB = new TinyDB(getApplicationContext());
-                    tinyDB.putString("token", mAccessToken);
+                    if (mAccessToken!=null){
+                        TinyDB tinyDB = new TinyDB(getApplicationContext());
+                        tinyDB.putString("token", mAccessToken);
+                    }
                     authFirebase(mAccessToken);
                 }
 
@@ -228,10 +229,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (!task.isSuccessful()) {
-                            Timber.i(task.getException());
+                            Timber.i(task.getException(), "Monday authFirebase failed");
                         } else {
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+                            Timber.i(task.getException(), "Monday authFirebase succeeded %s" , user.getEmail());
                         }
                     }
                 });
@@ -289,6 +291,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void loadWorkshopsForCity(String city) {
+        Timber.i("Monday late loadWorkshopsForCity started");
+
         Query query;
         if (city.equals(getString(R.string.spinner_cities_all_value))) {
             query = FirebaseDatabase.getInstance()

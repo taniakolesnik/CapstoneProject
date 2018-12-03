@@ -12,7 +12,7 @@ public class ReleaseTree extends Timber.Tree {
     // return only WARN, ERROR, WTF
     @Override
     protected boolean isLoggable(@Nullable String tag, int priority) {
-        if (priority == Log.VERBOSE || priority == Log.DEBUG || priority == Log.INFO){
+        if (priority == Log.VERBOSE || priority == Log.DEBUG){
             return false;
         }
         return true;
