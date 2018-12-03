@@ -26,8 +26,7 @@
             android:textAlignment="center"
             android:textColor="@color/colorWhite"
             android:fontFamily="sans-serif"
-            android:textStyle="bold"
-            android:text="JUN"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/date_tv"
@@ -39,8 +38,7 @@
             android:layout_weight="1"
             android:layout_gravity="center"
             android:textAlignment="center"
-            android:text="30"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:textColor="@color/colorPrimaryDark"
             android:fontFamily="sans-serif"
             android:background="@drawable/date_icon_date_shape"/>

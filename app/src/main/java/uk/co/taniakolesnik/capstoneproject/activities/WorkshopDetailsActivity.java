@@ -378,30 +378,29 @@ public class WorkshopDetailsActivity extends AppCompatActivity
         TinyDB tinyDB = new TinyDB(this);
         try {
             currentUser = tinyDB.getObject(getString(R.string.firebase_user_tinyDb_key), User.class);
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()){
+                        for (DataSnapshot dataSnapshotItem : dataSnapshot.getChildren()){
+                            User user = dataSnapshotItem.getValue(User.class);
+                            if (user.getEmail().equals(currentUser.getEmail())){
+                                updateUI(true);
+                            }
+                        }
+                    }
+                }
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         } catch (NullPointerException e){
             signToWorkshopButton.setVisibility(View.GONE);
             Timber.i(e);
         }
 
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()){
-                    for (DataSnapshot dataSnapshotItem : dataSnapshot.getChildren()){
-                        User user = dataSnapshotItem.getValue(User.class);
-                        if (user.getEmail().equals(currentUser.getEmail())){
-                            updateUI(true);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     private void loadAddNewCityDialogue() {

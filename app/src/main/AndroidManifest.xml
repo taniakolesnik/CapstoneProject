@@ -20,14 +20,23 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:host="callback"
-                    android:scheme="capstoneproject"/>
+
+                <data
+                    android:host="callback"
+                    android:scheme="capstoneproject" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activities.WorkshopDetailsActivity"
+            android:parentActivityName=".activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+        <activity android:name=".activities.UserInfoActivity"
             android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

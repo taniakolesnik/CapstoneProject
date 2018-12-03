@@ -59,7 +59,7 @@ public class WorkshopsFirebaseRecyclerAdapter extends FirebaseRecyclerAdapter<Wo
         final Workshop workshop = getItem(position);
         final String id = getRef(position).getKey();
 
-        holder.time.setText(getDayOfWeek(workshop.getDate()) + ", " + workshop.getTime());
+        holder.time.setText(mContext.getString(R.string.day_time_string, getDayOfWeek(workshop.getDate()), workshop.getTime()));
         holder.date.setText(getDate(workshop.getDate()));
         holder.month.setText(getMonth(workshop.getDate()));
         holder.name.setText(workshop.getName());

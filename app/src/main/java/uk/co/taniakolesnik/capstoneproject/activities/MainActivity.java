@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         } else {
@@ -207,6 +206,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onResponse(@NonNull Call<AccessToken> call, @NonNull Response<AccessToken> response) {
                 if (response.body() != null) {
                     mAccessToken = response.body().getAccessToken();
+                    TinyDB tinyDB = new TinyDB(getApplicationContext());
+                    tinyDB.putString("token", mAccessToken);
                     authFirebase(mAccessToken);
                 }
 
@@ -349,10 +350,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         int id = item.getItemId();
         switch (id) {
             case R.id.addWorkshop:
-                Intent intent = new Intent(getApplicationContext(), WorkshopDetailsActivity.class);
-                intent.putExtra(getString(R.string.open_workshop_details_intent_key),
+                Intent addWorkshopIntent = new Intent(getApplicationContext(), WorkshopDetailsActivity.class);
+                addWorkshopIntent.putExtra(getString(R.string.open_workshop_details_intent_key),
                         WorkshopDetailsActivity.INTENT_OPEN_ADD_WORKSHOP_DETAILS);
-                startActivity(intent);
+                startActivity(addWorkshopIntent);
+                return true;
+
+            case R.id.userInfo:
+                Intent userInfoIntent = new Intent(getApplicationContext(), UserInfoActivity.class);
+                startActivity(userInfoIntent);
                 return true;
 
             case R.id.signOutMenu:

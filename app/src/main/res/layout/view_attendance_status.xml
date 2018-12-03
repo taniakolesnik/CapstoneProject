@@ -12,9 +12,9 @@
         android:layout_height="match_parent"
         android:fontFamily="sans-serif"
         android:gravity="center"
-        android:text="i"
+        android:text="@string/info_text_workshop_list"
         android:textColor="@color/colorWhite"
-        android:textSize="24dp">
+        android:textSize="24sp">
     </TextView>
 
     <RelativeLayout
@@ -29,8 +29,8 @@
             android:layout_height="20dp"
             android:gravity="center"
             android:layout_centerInParent="true"
-            android:src="@drawable/tick_red">
-        </ImageView>
+            android:src="@drawable/tick_red"
+            android:contentDescription="@string/attending_checkbox_content_description"/>
 
     </RelativeLayout>
 

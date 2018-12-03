@@ -12,7 +12,6 @@
     <string name="workshop_address_editText_hint" translatable="true">address</string>
 
     <string name="sign_out_menu_text" translatable="true">Sign out</string>
-    <string name="sign_out_workshop_text" translatable="true">Sign out</string>
     <string name="sign_in_workshop_text" translatable="true">Sign in</string>
 
     <string name="firebase_root_name" translatable="false">root</string>
@@ -29,19 +28,24 @@
     <string name="login_sign_in_message" translatable="true">Or sign into your existing account</string>
     <string name="login_sign_up_message" translatable="true">Do you fall under a under-represented group in coding? You can learn it for free with us! \n (if you are coach, feel free to sign up too)</string>
 
-
+    <!-- Images content desctription -->
+    <string name="user_profile_content_description" translatable="true">user profile picture</string>
+    <string name="attending_checkbox_content_description" translatable="true">user profile picture</string>
     <!-- Main -->
 
     <string name="workshops_title" translatable="true">Workshops</string>
     <string name="code_query_parameter" translatable="false">code</string>
     <string name="error_query_parameter" translatable="false">error</string>
     <string name="login_button_text" translatable="true">Log in</string>
+    <string name="user_info_menu_text" translatable="true">User Info</string>
     <string name="add_workshop_menu_text" translatable="true">Add workshop</string>
     <string name="open_workshop_details_intent_key">open_workshop_key</string>
     <string name="workshop_tinydb_key" translatable="false">workshop_tinydb</string>
     <string name="current_workshop_id_key" translatable="false">workshop_id_key</string>
     <string name="app_bar_title_donation" translatable="true">You are never too old to set another goal or to dream a new dream. - C.S. Lewis</string>
     <string name="spinner_cities_all_value" translatable="true">All</string>
+    <string name="info_text_workshop_list">i</string>
+    <string name="day_time_string" translatable="true">%s , %s</string>
 
     <!-- Workshop details activity-->
 
@@ -58,6 +62,8 @@
     <string name="time_not_set_message">Time is mandatory.</string>
     <string name="name_not_set_message">Name is mandatory.</string>
     <string name="address_not_set_message">Address is mandatory.</string>
+    <string name="save_workshop_menu_item">Save</string>
+    <string name="cancel_workshop_menu_item">Cancel</string>
 
 </resources>
 
