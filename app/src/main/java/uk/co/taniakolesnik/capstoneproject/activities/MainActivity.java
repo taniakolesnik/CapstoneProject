@@ -60,8 +60,8 @@ import uk.co.taniakolesnik.capstoneproject.ui_tools.WorkshopsFirebaseRecyclerAda
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private static final String CLIENT_ID = "";
-    private static final String CLIENT_SECRET = "";
+    private static final String CLIENT_ID = "3e518903d1e2a128f2f0";
+    private static final String CLIENT_SECRET = "6209b7dc86a0e01ca118205a736201b3db118438";
     private static final String REDIRECT_URI = "capstoneproject://callback";
 
     private WorkshopsFirebaseRecyclerAdapter adapter;
